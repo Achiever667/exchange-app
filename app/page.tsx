@@ -1,65 +1,147 @@
-import Image from "next/image";
+/**
+ * Root Page - Dashboard demonstrating the architecture
+ * Shows auth, wallet, and payment features
+ */
 
-export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+'use client';
+
+import { useEffect } from 'react';
+import { useAuthStore } from '@/features/auth/store';
+import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useWallets } from '@/features/wallet/hooks/useWallet';
+import { WalletList } from '@/features/wallet/components/WalletList';
+import { LoginForm } from '@/features/auth/components/LoginForm';
+import { Button } from '@/components/common/Button';
+
+/**
+ * Dashboard Component - Main application page
+ * Demonstrates:
+ * - Auth state management
+ * - Wallet feature integration
+ * - Proper component composition
+ */
+function DashboardContent() {
+  const { user, isAuthenticated } = useAuth();
+  const { data: wallets, isLoading: walletsLoading } = useWallets();
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="w-full max-w-md">
+          <div className="bg-white rounded-lg shadow p-6 space-y-6">
+            <div className="text-center">
+              <h1 className="text-2xl font-bold text-gray-900">Exchange App</h1>
+              <p className="text-gray-600 mt-2">Sign in to your account</p>
+            </div>
+            <LoginForm
+              onSuccess={() => {
+                console.log('Login successful');
+              }}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-gray-900">Exchange App</h1>
+          <div className="flex items-center gap-4">
+            <div className="text-right">
+              <p className="text-sm text-gray-600">Welcome back,</p>
+              <p className="font-semibold text-gray-900">{user?.firstName} {user?.lastName}</p>
+            </div>
+            <Button variant="secondary" size="sm">
+              Logout
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {/* User Info Card */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Account Info</h2>
+            <dl className="space-y-4">
+              <div>
+                <dt className="text-sm text-gray-600">Email</dt>
+                <dd className="text-sm font-medium text-gray-900">{user?.email}</dd>
+              </div>
+              <div>
+                <dt className="text-sm text-gray-600">Phone</dt>
+                <dd className="text-sm font-medium text-gray-900">{user?.phoneNumber}</dd>
+              </div>
+              <div>
+                <dt className="text-sm text-gray-600">KYC Status</dt>
+                <dd>
+                  <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                    user?.kyc === 'VERIFIED'
+                      ? 'bg-green-100 text-green-800'
+                      : user?.kyc === 'REJECTED'
+                      ? 'bg-red-100 text-red-800'
+                      : 'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    {user?.kyc}
+                  </span>
+                </dd>
+              </div>
+            </dl>
+          </div>
+
+          {/* Quick Stats */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Stats</h2>
+            <div className="space-y-4">
+              <div>
+                <p className="text-sm text-gray-600">Total Wallets</p>
+                <p className="text-2xl font-bold text-blue-600">{wallets?.length || 0}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Actions</h2>
+            <div className="space-y-2">
+              <Button fullWidth variant="primary" size="md">
+                Deposit
+              </Button>
+              <Button fullWidth variant="secondary" size="md">
+                Withdraw
+              </Button>
+              <Button fullWidth variant="secondary" size="md">
+                Transfer
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Wallets Section */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-6">Your Wallets</h2>
+          <WalletList isLoading={walletsLoading} />
         </div>
       </main>
     </div>
   );
+}
+
+/**
+ * Root Layout Page Component
+ * Initializes auth store hydration
+ */
+export default function Home() {
+  const hydrate = useAuthStore((state) => state.hydrate);
+
+  useEffect(() => {
+    hydrate();
+  }, [hydrate]);
+
+  return <DashboardContent />;
 }
