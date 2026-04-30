@@ -31,7 +31,7 @@ export function AuthLayout({
       <Box className="flex flex-1 items-center justify-center p-6 bg-gray-50">
         <Paper
           elevation={3}
-          className="w-full max-w-lg p-8 rounded-2xl space-y-6"
+          className="w-full max-w-lg p-8 rounded-2xl space-y-4"
         >
           {(title || subtitle) && (
             <div className="space-y-1 text-center">
