@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { ToastProvider, ToastContainer } from "@/components/ui/toast";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,7 +31,10 @@ export function Providers({ children }: { children: ReactNode }) {
       <AppRouterCacheProvider>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          {children}
+          <ToastProvider>
+            {children}
+            <ToastContainer />
+          </ToastProvider>
         </ThemeProvider>
       </AppRouterCacheProvider>
     </QueryClientProvider>
