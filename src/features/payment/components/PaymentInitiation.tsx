@@ -89,7 +89,7 @@ export function PaymentInitiationForm({ walletId, onSuccess }: PaymentInitiation
           min="0"
           value={formData.amount}
           onChange={handleChange}
-          disabled={initiatePaymentMutation.isLoading}
+          disabled={initiatePaymentMutation.isPending}
           required
           className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500"
           placeholder="0.00"
@@ -105,7 +105,7 @@ export function PaymentInitiationForm({ walletId, onSuccess }: PaymentInitiation
           name="currency"
           value={formData.currency}
           onChange={handleChange}
-          disabled={initiatePaymentMutation.isLoading}
+          disabled={initiatePaymentMutation.isPending}
           className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500"
         >
           <option value="USD">USD</option>
@@ -125,7 +125,7 @@ export function PaymentInitiationForm({ walletId, onSuccess }: PaymentInitiation
           name="provider"
           value={formData.provider}
           onChange={handleChange}
-          disabled={initiatePaymentMutation.isLoading}
+          disabled={initiatePaymentMutation.isPending}
           className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500"
         >
           <option value="STRIPE">Credit Card (Stripe)</option>
@@ -143,10 +143,10 @@ export function PaymentInitiationForm({ walletId, onSuccess }: PaymentInitiation
 
       <button
         type="submit"
-        disabled={initiatePaymentMutation.isLoading}
+        disabled={initiatePaymentMutation.isPending}
         className="w-full bg-blue-600 text-white py-2 px-4 rounded-md font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
-        {initiatePaymentMutation.isLoading ? 'Processing...' : 'Continue to Payment'}
+        {initiatePaymentMutation.isPending ? 'Processing...' : 'Continue to Payment'}
       </button>
     </form>
   );
@@ -160,9 +160,9 @@ interface PaymentStatusComponentProps {
 }
 
 export function PaymentStatus({ paymentId }: PaymentStatusComponentProps) {
-  const { data: payment, isLoading, error } = usePaymentStatus(paymentId);
+  const { data: payment, isPending, error } = usePaymentStatus(paymentId);
 
-  if (isLoading) {
+  if (isPending) {
     return <div className="animate-pulse">Loading payment status...</div>;
   }
 
