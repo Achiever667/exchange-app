@@ -45,20 +45,17 @@ export function LoginForm({
 
 const handleSearch = (query: string) => {
   console.log("Searching for:", query);
-  // Fetch new options here
 };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLocalError(null);
 
-    // Basic validation check
     if (!formData.email || !formData.password) {
       setLocalError("Email and password are required");
       return;
     }
 
-    // Optional: Check if all rules are met before submitting
     const allRulesMet = passwordRules.every(rule => rule.test(formData.password));
     if (!allRulesMet) {
       setLocalError("Please meet all password requirements");
@@ -78,7 +75,6 @@ const handleSearch = (query: string) => {
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-md space-y-6">
       
-      {/* ✅ Email */}
       <UiInput
         label="Email"
         name="email"
@@ -105,7 +101,6 @@ onChange={(val) => setAge(String(val))}
 
 />
 
-      {/* ✅ Password with Dynamic Rules */}
       <UiInput
         label="Password"
         name="password"
@@ -116,12 +111,11 @@ onChange={(val) => setAge(String(val))}
         placeholder="••••••••"
         startIcon={<Lock className="text-gray-400" />}
         showPasswordToggle
-        validationRules={passwordRules} // Passing the rules here
+        validationRules={passwordRules}
         error={!!errorMessage && !formData.password}
         helperText={!formData.password && errorMessage ? "Password is required" : ""}
       />
 
-      {/* ✅ Global error message box */}
       {errorMessage && (
         <div className="rounded-lg bg-red-50 p-3 border border-red-200">
           <p className="text-sm text-red-700 text-center font-medium">
@@ -130,7 +124,6 @@ onChange={(val) => setAge(String(val))}
         </div>
       )}
 
-      {/* ✅ Submit Button */}
       <button
         type="submit"
         disabled={isLoading}

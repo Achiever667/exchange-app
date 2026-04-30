@@ -48,12 +48,10 @@ export function UiSelect({
   const [search, setSearch] = React.useState("");
   const [filteredOptions, setFilteredOptions] = React.useState(options);
 
-  // 🔎 Debounced search
   const debouncedSearch = React.useMemo(
     () =>
       debounce(async (query: string) => {
         if (!onSearch) {
-          // local filter fallback
           setFilteredOptions(
             options.filter((opt) =>
               opt.label.toLowerCase().includes(query.toLowerCase())
@@ -111,7 +109,6 @@ export function UiSelect({
             },
           }}
         >
-          {/* 🔎 Search box inside dropdown */}
           {searchable && (
             <Box component="div" sx={{ px: 1, pb: 1 }}>
               <TextField

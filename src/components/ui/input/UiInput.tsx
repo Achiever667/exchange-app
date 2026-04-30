@@ -31,7 +31,6 @@ type UiInputProps = {
   endIcon?: React.ReactNode;
   type?: string;
   showPasswordToggle?: boolean;
-  // We change passwordRules to an array of objects for logic testing
   validationRules?: PasswordRule[];
 } & Omit<TextFieldProps, "slotProps">;
 
@@ -81,10 +80,9 @@ export function Input({
         error={error}
         disabled={disabled}
         type={inputType}
-        // Custom styling for rounded borders
         sx={{
           "& .MuiOutlinedInput-root": {
-            borderRadius: "12px", // Adjust for desired "roundness"
+            borderRadius: "12px", 
             "& fieldset": { borderColor: "#e2e8f0" },
           },
           ...props.sx,
@@ -110,7 +108,6 @@ export function Input({
 
       {helperText && <FormHelperText error={error}>{helperText}</FormHelperText>}
 
-      {/* Password Validation List */}
       {isPassword && isDirty && validationRules.length > 0 && (
         <ul className="mt-3 space-y-1.5">
           {validationRules.map((rule, i) => {
