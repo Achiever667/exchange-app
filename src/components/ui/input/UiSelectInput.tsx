@@ -74,8 +74,8 @@ export function UiSelect({
     debouncedSearch(query);
   };
 
-  const handleChange = (event: SelectChangeEvent) => {
-    onChange(event.target.value as string);
+  const handleChange = (event: any) => {
+    onChange(event.target.value as string | number);
   };
 
   const sizeMap = {
@@ -103,8 +103,8 @@ export function UiSelect({
             height: sizeMap[size],
           }}
           MenuProps={{
-            PaperProps: {
-              sx: {
+            sx: {
+              "& .MuiPaper-root": {
                 borderRadius: 2,
                 padding: searchable ? 1 : 0,
               },
@@ -113,7 +113,7 @@ export function UiSelect({
         >
           {/* 🔎 Search box inside dropdown */}
           {searchable && (
-            <Box px={1} pb={1}>
+            <Box component="div" sx={{ px: 1, pb: 1 }}>
               <TextField
                 size="small"
                 fullWidth
