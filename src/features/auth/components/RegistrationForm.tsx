@@ -1,60 +1,67 @@
-"use client";
+'use client';
 
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import { useRegister } from "../hooks/useAuth";
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
+import { useRegister } from '../hooks/useAuth';
 import {
   UiField,
   UiFieldError,
   UiFieldGroup,
   DEFAULT_PASSWORD_RULES,
-} from "@/components/ui/field";
-import { UiButton } from "@/components/ui/button/UiButton";
+} from '@/components/ui/field';
+import { UiButton } from '@/components/ui/button/UiButton';
+import { useToast } from '@/components/ui/toast';
 
-import { Mail, Lock, Person, Phone } from "@mui/icons-material";
-import { registerSchema, RegisterCredentials } from "../schemas/registerSchema";
+import { Mail, Lock, Person, Phone } from '@mui/icons-material';
+import { registerSchema, RegisterCredentials } from '../schemas/registerSchema';
 
 interface RegistrationFormProps {
   onSuccess?: () => void;
   onVerificationRequired?: (email: string) => void;
-  isLoading?: boolean;
 }
 
 export function RegistrationForm({
   onSuccess,
   onVerificationRequired,
-  isLoading: external_loading,
 }: RegistrationFormProps) {
   const registerMutation = useRegister();
-  
+  const { addToast } = useToast();
+
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting  },
     setError,
   } = useForm<RegisterCredentials>({
     resolver: zodResolver(registerSchema),
-    mode: "onChange",
+    mode: 'onChange',
   });
 
-  const isLoading = external_loading || registerMutation.isPending;
-
+  
   const onsubmit = async (data: RegisterCredentials) => {
     try {
       await registerMutation.mutateAsync(data);
+      addToast({
+        type: 'success',
+        message: 'Registration successful! Please verify your email.',
+      });
       onVerificationRequired?.(data.email);
       onSuccess?.();
     } catch (error: any) {
-      setError("root", { 
-        message: error.message || "Registration failed" 
+      const message = error.message || 'Registration failed';
+      addToast({ type: 'error', message });
+      setError('root', {
+        message,
       });
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onsubmit)} className="w-full max-w-2xl space-y-6">
-      
+    <form
+      onSubmit={handleSubmit(onsubmit)}
+      className="w-full max-w-2xl space-y-6"
+    >
       <UiFieldGroup
         title="Personal Information"
         description="Please fill in your details"
@@ -68,7 +75,7 @@ export function RegistrationForm({
                 {...field}
                 label="First Name"
                 placeholder="John"
-                disabled={isLoading}
+                disabled={isSubmitting }
                 error={!!errors.first_name}
                 errorMessage={errors.first_name?.message}
                 startIcon={<Person sx={{ fontSize: 20 }} />}
@@ -84,7 +91,7 @@ export function RegistrationForm({
                 {...field}
                 label="Last Name"
                 placeholder="Doe"
-                disabled={isLoading}
+                disabled={isSubmitting }
                 error={!!errors.last_name}
                 errorMessage={errors.last_name?.message}
                 startIcon={<Person sx={{ fontSize: 20 }} />}
@@ -105,7 +112,7 @@ export function RegistrationForm({
                 label="Email"
                 placeholder="you@example.com"
                 type="email"
-                disabled={isLoading}
+                disabled={isSubmitting }
                 error={!!errors.email}
                 errorMessage={errors.email?.message}
                 startIcon={<Mail sx={{ fontSize: 20 }} />}
@@ -121,8 +128,8 @@ export function RegistrationForm({
                 {...field}
                 label="Phone Number"
                 placeholder="+1234567890"
-                type="tel"
-                disabled={isLoading}
+                type="number"
+                disabled={isSubmitting }
                 error={!!errors.phone_number}
                 errorMessage={errors.phone_number?.message}
                 startIcon={<Phone sx={{ fontSize: 20 }} />}
@@ -143,7 +150,7 @@ export function RegistrationForm({
                 label="Password"
                 placeholder="••••••••"
                 type="password"
-                disabled={isLoading}
+                disabled={isSubmitting}
                 showPasswordToggle
                 validationRules={DEFAULT_PASSWORD_RULES}
                 error={!!errors.password}
@@ -162,7 +169,7 @@ export function RegistrationForm({
                 label="Confirm Password"
                 placeholder="••••••••"
                 type="password"
-                disabled={isLoading}
+                disabled={isSubmitting }
                 showPasswordToggle
                 error={!!errors.confirm_password}
                 errorMessage={errors.confirm_password?.message}
@@ -174,21 +181,17 @@ export function RegistrationForm({
       </UiFieldGroup>
 
       {errors.root && (
-        <UiFieldError className="justify-center">
+        <UiFieldError className="justify-center hidden">
           {errors.root.message}
         </UiFieldError>
       )}
 
-      <UiButton 
-        type="submit" 
-        disabled={isLoading || !isValid} 
-        fullWidth
-      >
-        {isLoading ? "Creating account..." : "Create Account"}
+      <UiButton type="submit" disabled={isSubmitting  || !isValid} fullWidth>
+        {isSubmitting  ? 'Creating account...' : 'Create Account'}
       </UiButton>
 
       <p className="text-center text-sm text-gray-600">
-        Already have an account?{" "}
+        Already have an account?{' '}
         <Link
           href="/auth/login"
           className="text-blue-600 hover:underline font-medium"

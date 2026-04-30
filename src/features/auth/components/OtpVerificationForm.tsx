@@ -8,6 +8,7 @@ import { useVerifyOtp, useResendOtp, useLogout } from "../hooks/useAuth";
 import { UiPinInput } from "@/components/ui/pin-input/UiPinInput";
 import { UiButton } from "@/components/ui/button/UiButton";
 import { UiFieldError } from "@/components/ui/field";
+import { useToast } from "@/components/ui/toast";
 import { EmailOutlined, LogoutOutlined, RefreshOutlined } from "@mui/icons-material";
 import { maskEmail } from "@/lib/utils";
 
@@ -30,6 +31,7 @@ export function OtpVerificationForm({ onSuccess }: OtpVerificationFormProps) {
   const verifyMutation = useVerifyOtp();
   const resendMutation = useResendOtp();
   const logoutMutation = useLogout();
+  const { addToast } = useToast();
 
   const isLoading = verifyMutation.isPending;
   const isResending = resendMutation.isPending;
@@ -38,7 +40,7 @@ export function OtpVerificationForm({ onSuccess }: OtpVerificationFormProps) {
     if (timeRemaining <= 0) return;
     const timer = setTimeout(() => setTimeRemaining((prev) => prev - 1), 1000);
     return () => clearTimeout(timer);
-  }, [timeRemaining]);
+}, [timeRemaining]);
 
   const handleResendOtp = async () => {
     if (!email || isResending) return;
@@ -46,8 +48,11 @@ export function OtpVerificationForm({ onSuccess }: OtpVerificationFormProps) {
       await resendMutation.mutateAsync(email);
       setTimeRemaining(RESEND_OTP_TIMEOUT);
       setError(null);
+      addToast({ type: "success", message: "OTP sent successfully!" });
     } catch (err: any) {
-      setError(err.message || "Failed to resend OTP");
+      const message = err.message || "Failed to resend OTP";
+      addToast({ type: "error", message });
+      setError(message);
     }
   };
 
@@ -55,9 +60,12 @@ export function OtpVerificationForm({ onSuccess }: OtpVerificationFormProps) {
     if (!email || value.length !== 6 || isLoading) return;
     try {
       await verifyMutation.mutateAsync({ email, otp: value });
+      addToast({ type: "success", message: "Verification successful!" });
       onSuccess?.();
     } catch (err: any) {
-      setError(err.message || "Invalid security code. Please try again.");
+      const message = err.message || "Invalid security code. Please try again.";
+      addToast({ type: "error", message });
+      setError(message);
       setOtp("");
     }
   };

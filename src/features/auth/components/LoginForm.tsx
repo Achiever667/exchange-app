@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useLogin } from "../hooks/useAuth";
 import { UiField, UiFieldError, DEFAULT_PASSWORD_RULES } from "@/components/ui/field";
 import { UiButton } from "@/components/ui/button/UiButton";
+import { useToast } from "@/components/ui/toast";
 
 import { Mail, Lock } from "@mui/icons-material";
 import { loginSchema, LoginCredentials } from "../schemas/loginSchema";
@@ -20,6 +21,7 @@ export function LoginForm({
   isLoading: externalLoading,
 }: LoginFormProps) {
   const loginMutation = useLogin();
+  const { addToast } = useToast();
 
   const {
     control,
@@ -36,10 +38,13 @@ export function LoginForm({
   const onSubmit = async (data: LoginCredentials) => {
     try {
       await loginMutation.mutateAsync(data);
+      addToast({ type: "success", message: "Login successful!" });
       onSuccess?.();
     } catch (error: any) {
+      const message = error.message || "Login failed";
+      addToast({ type: "error", message });
       setError("root", {
-        message: error.message || "Login failed",
+        message,
       });
     }
   };
