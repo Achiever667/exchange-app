@@ -95,14 +95,14 @@ const handleSearch = (query: string) => {
       <UiSelect
   label="Select Age"
   value={age}
-  onChange={(val) => setAge(val)}
+onChange={(val) => setAge(String(val))}
   onSearch={handleSearch}
   options={[
     { label: "Ten", value: 10 },
     { label: "Twenty", value: 20 },
     { label: "Thirty", value: 30 },
   ]}
-  placeholder="Choose an age..."
+
 />
 
       {/* ✅ Password with Dynamic Rules */}
