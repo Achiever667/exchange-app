@@ -3,10 +3,9 @@
 import { useState, FormEvent } from "react";
 import { useLogin } from "../hooks/useAuth";
 import { AuthCredentials } from "@/types";
-import { Input as UiInput } from "@/components/ui/input/UiInput";
+import { UiField, UiFieldError } from "@/components/ui/field";
 
 import { Mail, Lock } from "@mui/icons-material";
-import { UiSelect } from "@/components/ui/input/UiSelectInput";
 
 interface LoginFormProps {
   onSuccess?: () => void;
@@ -22,7 +21,11 @@ export function LoginForm({
     password: "",
   });
 
-  const [localError, setLocalError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<{
+    email?: string;
+    password?: string;
+    general?: string;
+  }>({});
 
   const loginMutation = useLogin();
   const isLoading = externalLoading ?? loginMutation.isPending;
@@ -38,27 +41,36 @@ export function LoginForm({
       ...prev,
       [name]: value,
     }));
-    setLocalError(null);
+    // Clear individual field error when user starts typing
+    setErrors((prev) => ({
+      ...prev,
+      [name]: undefined,
+      general: undefined,
+    }));
   };
-
-  const [age, setAge] = useState("");
-
-const handleSearch = (query: string) => {
-  console.log("Searching for:", query);
-};
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLocalError(null);
+    
+    const newErrors: typeof errors = {};
 
-    if (!formData.email || !formData.password) {
-      setLocalError("Email and password are required");
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
+    // Validate password rules
     const allRulesMet = passwordRules.every(rule => rule.test(formData.password));
     if (!allRulesMet) {
-      setLocalError("Please meet all password requirements");
+      setErrors({ password: "Please meet all password requirements" });
       return;
     }
 
@@ -66,62 +78,40 @@ const handleSearch = (query: string) => {
       await loginMutation.mutateAsync(formData);
       onSuccess?.();
     } catch (error: any) {
-      setLocalError(error.message || "Login failed");
+      setErrors({ general: error.message || "Login failed" });
     }
   };
 
-  const errorMessage = localError || loginMutation.error?.message;
-
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-md space-y-6">
-      
-      <UiInput
+      <UiField
         label="Email"
-        name="email"
+        placeholder="you@example.com"
         type="email"
         value={formData.email}
-        onChange={(e) => handleChange("email", e.target.value)}
+        onChange={(value) => handleChange("email", value)}
         disabled={isLoading}
-        placeholder="you@example.com"
-        startIcon={<Mail className="text-gray-400" />}
-        error={!!errorMessage && !formData.email}
-        helperText={!formData.email && errorMessage ? "Email is required" : ""}
+        error={!!errors.email}
+        errorMessage={errors.email}
+        startIcon={<Mail sx={{ color: "text.secondary", fontSize: 20 }} />}
       />
 
-      <UiSelect
-  label="Select Age"
-  value={age}
-onChange={(val) => setAge(String(val))}
-  onSearch={handleSearch}
-  options={[
-    { label: "Ten", value: 10 },
-    { label: "Twenty", value: 20 },
-    { label: "Thirty", value: 30 },
-  ]}
-
-/>
-
-      <UiInput
+      <UiField
         label="Password"
-        name="password"
+        placeholder="••••••••"
         type="password"
         value={formData.password}
-        onChange={(e) => handleChange("password", e.target.value)}
+        onChange={(value) => handleChange("password", value)}
         disabled={isLoading}
-        placeholder="••••••••"
-        startIcon={<Lock className="text-gray-400" />}
         showPasswordToggle
         validationRules={passwordRules}
-        error={!!errorMessage && !formData.password}
-        helperText={!formData.password && errorMessage ? "Password is required" : ""}
+        error={!!errors.password}
+        errorMessage={errors.password}
+        startIcon={<Lock sx={{ color: "text.secondary", fontSize: 20 }} />}
       />
 
-      {errorMessage && (
-        <div className="rounded-lg bg-red-50 p-3 border border-red-200">
-          <p className="text-sm text-red-700 text-center font-medium">
-            {errorMessage}
-          </p>
-        </div>
+      {errors.general && (
+        <UiFieldError className="justify-center">{errors.general}</UiFieldError>
       )}
 
       <button
