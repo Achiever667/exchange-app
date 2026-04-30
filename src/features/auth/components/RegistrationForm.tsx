@@ -1,20 +1,19 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRegister } from "../hooks/useAuth";
-import { RegisterPayload } from "@/types";
-import { UiField, UiFieldError, UiFieldGroup, DEFAULT_PASSWORD_RULES } from "@/components/ui/field";
-import { Button } from "@/components/ui/button/UiButton";
+import {
+  UiField,
+  UiFieldError,
+  UiFieldGroup,
+  DEFAULT_PASSWORD_RULES,
+} from "@/components/ui/field";
+import { UiButton } from "@/components/ui/button/UiButton";
 
-import { 
-  Mail, 
-  Lock, 
-  Person, 
-  Phone, 
-  Visibility, 
-  VisibilityOff 
-} from "@mui/icons-material";
+import { Mail, Lock, Person, Phone } from "@mui/icons-material";
+import { registerSchema, RegisterCredentials } from "../schemas/registerSchema";
 
 interface RegistrationFormProps {
   onSuccess?: () => void;
@@ -25,197 +24,176 @@ interface RegistrationFormProps {
 export function RegistrationForm({
   onSuccess,
   onVerificationRequired,
-  isLoading: externalLoading,
+  isLoading: external_loading,
 }: RegistrationFormProps) {
-  const [formData, setFormData] = useState<RegisterPayload>({
-    email: "",
-    password: "",
-    firstName: "",
-    lastName: "",
-    phoneNumber: "",
+  const registerMutation = useRegister();
+  
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+    setError,
+  } = useForm<RegisterCredentials>({
+    resolver: zodResolver(registerSchema),
+    mode: "onChange",
   });
 
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const isLoading = external_loading || registerMutation.isPending;
 
-  const [errors, setErrors] = useState<{
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-    phoneNumber?: string;
-    password?: string;
-    confirmPassword?: string;
-    general?: string;
-  }>({});
-
-const registerMutation = useRegister();
-  const isLoading = externalLoading ?? registerMutation.isPending;
-
-  type FieldName = keyof typeof formData | "confirmPassword";
-
-  const handleChange = (name: FieldName, value: string) => {
-    if (name === "confirmPassword") {
-      setConfirmPassword(value);
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
-    // Clear error when user starts typing
-    setErrors((prev) => ({
-      ...prev,
-      [name]: undefined,
-      general: undefined,
-    }));
-  };
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    
-    const newErrors: typeof errors = {};
-
-    // Validate required fields
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = "First name is required";
-    }
-
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = "Last name is required";
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email";
-    }
-
-    if (!formData.phoneNumber.trim()) {
-      newErrors.phoneNumber = "Phone number is required";
-    }
-
-if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else {
-      // Validate password rules
-      const allRulesMet = DEFAULT_PASSWORD_RULES.every((rule) => rule.test(formData.password));
-      if (!allRulesMet) {
-        newErrors.password = "Please meet all password requirements";
-      }
-    }
-
-    if (!confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password";
-    } else if (formData.password !== confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
+  const onsubmit = async (data: RegisterCredentials) => {
     try {
-      await registerMutation.mutateAsync(formData);
-      // If registration succeeds but requires OTP verification
-      onVerificationRequired?.(formData.email);
+      await registerMutation.mutateAsync(data);
+      onVerificationRequired?.(data.email);
       onSuccess?.();
     } catch (error: any) {
-      setErrors({ general: error.message || "Registration failed" });
+      setError("root", { 
+        message: error.message || "Registration failed" 
+      });
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-md space-y-6">
-      <UiFieldGroup title="Personal Information" description="Please fill in your details">
-        <UiField
-          label="First Name"
-          placeholder="John"
-          value={formData.firstName}
-          onChange={(value) => handleChange("firstName", value)}
-          disabled={isLoading}
-          error={!!errors.firstName}
-          errorMessage={errors.firstName}
-          startIcon={<Person sx={{ color: "text.secondary", fontSize: 20 }} />}
-        />
+    <form onSubmit={handleSubmit(onsubmit)} className="w-full max-w-2xl space-y-6">
+      
+      <UiFieldGroup
+        title="Personal Information"
+        description="Please fill in your details"
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <Controller
+            name="first_name"
+            control={control}
+            render={({ field }) => (
+              <UiField
+                {...field}
+                label="First Name"
+                placeholder="John"
+                disabled={isLoading}
+                error={!!errors.first_name}
+                errorMessage={errors.first_name?.message}
+                startIcon={<Person sx={{ fontSize: 20 }} />}
+              />
+            )}
+          />
 
-        <UiField
-          label="Last Name"
-          placeholder="Doe"
-          value={formData.lastName}
-          onChange={(value) => handleChange("lastName", value)}
-          disabled={isLoading}
-          error={!!errors.lastName}
-          errorMessage={errors.lastName}
-          startIcon={<Person sx={{ color: "text.secondary", fontSize: 20 }} />}
-        />
+          <Controller
+            name="last_name"
+            control={control}
+            render={({ field }) => (
+              <UiField
+                {...field}
+                label="Last Name"
+                placeholder="Doe"
+                disabled={isLoading}
+                error={!!errors.last_name}
+                errorMessage={errors.last_name?.message}
+                startIcon={<Person sx={{ fontSize: 20 }} />}
+              />
+            )}
+          />
+        </div>
       </UiFieldGroup>
 
-      <UiFieldGroup title="Contact Information" description="How can we reach you?">
-        <UiField
-          label="Email"
-          placeholder="you@example.com"
-          type="email"
-          value={formData.email}
-          onChange={(value) => handleChange("email", value)}
-          disabled={isLoading}
-          error={!!errors.email}
-          errorMessage={errors.email}
-          startIcon={<Mail sx={{ color: "text.secondary", fontSize: 20 }} />}
-        />
+      <UiFieldGroup>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <UiField
+                {...field}
+                label="Email"
+                placeholder="you@example.com"
+                type="email"
+                disabled={isLoading}
+                error={!!errors.email}
+                errorMessage={errors.email?.message}
+                startIcon={<Mail sx={{ fontSize: 20 }} />}
+              />
+            )}
+          />
 
-        <UiField
-          label="Phone Number"
-          placeholder="+1234567890"
-          type="tel"
-          value={formData.phoneNumber}
-          onChange={(value) => handleChange("phoneNumber", value)}
-          disabled={isLoading}
-          error={!!errors.phoneNumber}
-          errorMessage={errors.phoneNumber}
-          startIcon={<Phone sx={{ color: "text.secondary", fontSize: 20 }} />}
-        />
+          <Controller
+            name="phone_number"
+            control={control}
+            render={({ field }) => (
+              <UiField
+                {...field}
+                label="Phone Number"
+                placeholder="+1234567890"
+                type="tel"
+                disabled={isLoading}
+                error={!!errors.phone_number}
+                errorMessage={errors.phone_number?.message}
+                startIcon={<Phone sx={{ fontSize: 20 }} />}
+              />
+            )}
+          />
+        </div>
       </UiFieldGroup>
 
-      <UiFieldGroup title="Security" description="Create a strong password">
-        <UiField
-          label="Password"
-          placeholder="••••••••"
-          type="password"
-          value={formData.password}
-          onChange={(value) => handleChange("password", value)}
-          disabled={isLoading}
-showPasswordToggle
-          validationRules={DEFAULT_PASSWORD_RULES}
-          error={!!errors.password}
-          errorMessage={errors.password}
-          startIcon={<Lock sx={{ color: "text.secondary", fontSize: 20 }} />}
-        />
+      {/* SECURITY SECTION */}
+      <UiFieldGroup>
+        <div className="grid grid-cols-1 lg:grid-cols-1 gap-4">
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => (
+              <UiField
+                {...field}
+                label="Password"
+                placeholder="••••••••"
+                type="password"
+                disabled={isLoading}
+                showPasswordToggle
+                validationRules={DEFAULT_PASSWORD_RULES}
+                error={!!errors.password}
+                errorMessage={errors.password?.message}
+                startIcon={<Lock sx={{ fontSize: 20 }} />}
+              />
+            )}
+          />
 
-        <UiField
-          label="Confirm Password"
-          placeholder="••••••••"
-          type="password"
-          value={confirmPassword}
-          onChange={(value) => handleChange("confirmPassword", value)}
-          disabled={isLoading}
-          showPasswordToggle
-          error={!!errors.confirmPassword}
-          errorMessage={errors.confirmPassword}
-          startIcon={<Lock sx={{ color: "text.secondary", fontSize: 20 }} />}
-        />
+          <Controller
+            name="confirm_password"
+            control={control}
+            render={({ field }) => (
+              <UiField
+                {...field}
+                label="Confirm Password"
+                placeholder="••••••••"
+                type="password"
+                disabled={isLoading}
+                showPasswordToggle
+                error={!!errors.confirm_password}
+                errorMessage={errors.confirm_password?.message}
+                startIcon={<Lock sx={{ fontSize: 20 }} />}
+              />
+            )}
+          />
+        </div>
       </UiFieldGroup>
 
-{errors.general && (
-        <UiFieldError className="justify-center">{errors.general}</UiFieldError>
+      {errors.root && (
+        <UiFieldError className="justify-center">
+          {errors.root.message}
+        </UiFieldError>
       )}
 
-      <Button type="submit" disabled={isLoading} fullWidth>
+      <UiButton 
+        type="submit" 
+        disabled={isLoading || !isValid} 
+        fullWidth
+      >
         {isLoading ? "Creating account..." : "Create Account"}
-      </Button>
+      </UiButton>
 
       <p className="text-center text-sm text-gray-600">
         Already have an account?{" "}
-        <Link href="/login" className="text-blue-600 hover:underline font-medium">
+        <Link
+          href="/login"
+          className="text-blue-600 hover:underline font-medium"
+        >
           Login
         </Link>
       </p>

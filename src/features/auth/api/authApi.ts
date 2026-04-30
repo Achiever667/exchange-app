@@ -11,7 +11,6 @@ import {
   AUTH_ENDPOINTS,
 } from '@/constants';
 
-
 class AuthApiService {
 
   async register(payload: RegisterPayload): Promise<AuthResponse> {
@@ -19,12 +18,10 @@ class AuthApiService {
     return response.data!;
   }
 
-
   async login(credentials: AuthCredentials): Promise<AuthResponse> {
     const response = await apiClient.post<AuthResponse>(AUTH_ENDPOINTS.LOGIN, credentials);
     return response.data!;
   }
-
 
   async verifyOtp(payload: OTPVerificationPayload): Promise<AuthResponse> {
     const response = await apiClient.post<AuthResponse>(

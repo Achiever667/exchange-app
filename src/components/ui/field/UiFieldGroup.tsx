@@ -5,21 +5,9 @@ import { Box, Typography } from "@mui/material";
 
 type UiFieldGroupProps = {
   children: ReactNode;
-  /**
-   * Title for the field group
-   */
   title?: string;
-  /**
-   * Optional description for the field group
-   */
   description?: string;
-  /**
-   * If true, the group is disabled
-   */
   disabled?: boolean;
-  /**
-   * Custom className for additional styling
-   */
   className?: string;
 };
 

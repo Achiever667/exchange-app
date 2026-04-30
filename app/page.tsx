@@ -11,7 +11,7 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useWallets } from '@/features/wallet/hooks/useWallet';
 import { WalletList } from '@/features/wallet/components/WalletList';
 import { LoginForm } from '@/features/auth/components/LoginForm';
-import { Button } from '@/components/ui/button/UiButton';
+import { UiButton } from '@/components/ui/button/UiButton';
 
 /**
  * Dashboard Component - Main application page
@@ -55,17 +55,15 @@ function DashboardContent() {
               <p className="text-sm text-gray-600">Welcome back,</p>
               <p className="font-semibold text-gray-900">{user?.firstName} {user?.lastName}</p>
             </div>
-            <Button variant="secondary" size="sm">
+            <UiButton variant="secondary" size="sm">
               Logout
-            </Button>
+            </UiButton>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {/* User Info Card */}
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Account Info</h2>
             <dl className="space-y-4">
@@ -105,24 +103,22 @@ function DashboardContent() {
             </div>
           </div>
 
-          {/* Actions */}
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Actions</h2>
             <div className="space-y-2">
-              <Button fullWidth variant="primary" size="md">
+              <UiButton fullWidth variant="primary" size="md">
                 Deposit
-              </Button>
-              <Button fullWidth variant="secondary" size="md">
+              </UiButton>
+              <UiButton fullWidth variant="secondary" size="md">
                 Withdraw
-              </Button>
-              <Button fullWidth variant="secondary" size="md">
+              </UiButton>
+              <UiButton fullWidth variant="secondary" size="md">
                 Transfer
-              </Button>
+              </UiButton>
             </div>
           </div>
         </div>
 
-        {/* Wallets Section */}
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-6">Your Wallets</h2>
           <WalletList isLoading={walletsLoading} />
@@ -132,10 +128,6 @@ function DashboardContent() {
   );
 }
 
-/**
- * Root Layout Page Component
- * Initializes auth store hydration
- */
 export default function Home() {
   const hydrate = useAuthStore((state) => state.hydrate);
 

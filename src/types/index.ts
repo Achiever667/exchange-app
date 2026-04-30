@@ -42,9 +42,9 @@ export interface AuthCredentials {
 export interface RegisterPayload {
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
+  first_name: string;
+  last_name: string;
+  phone_number: string;
 }
 
 export interface OTPVerificationPayload {

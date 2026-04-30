@@ -1,22 +1,16 @@
-"use client";
+'use client';
 
-import { ReactNode, ChangeEvent } from "react";
-import { Box, TextField, TextFieldProps } from "@mui/material";
-import { 
-  Visibility, 
-  VisibilityOff 
-} from "@mui/icons-material";
-import { useState } from "react";
+import { ReactNode, ChangeEvent, useState } from 'react';
+import { Box, TextField, TextFieldProps, IconButton } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
-import { UiFieldError } from "./UiFieldError";
-import { PasswordMeter, DEFAULT_PASSWORD_RULES, type PasswordValidationRules } from "../password";
+import { UiFieldError } from './UiFieldError';
+import { PasswordMeter, type PasswordValidationRules } from '../password';
 
 type PasswordRule = PasswordValidationRules[number];
-
-type Size = "sm" | "md" | "lg";
+type Size = 'sm' | 'md' | 'lg';
 
 type UiFieldProps = {
-
   label?: string;
   placeholder?: string;
   error?: boolean;
@@ -50,8 +44,8 @@ export function UiField({
   errorMessage,
   helperText,
   disabled = false,
-  size = "md",
-  type = "text",
+  size = 'md',
+  type = 'text',
   showPasswordToggle = false,
   validationRules = [],
   startIcon,
@@ -61,19 +55,22 @@ export function UiField({
   onChange,
   onBlur,
   textFieldProps,
-  className = "",
+  className = '',
 }: UiFieldProps) {
   const [showPassword, setShowPassword] = useState(false);
-  const [internalValue, setInternalValue] = useState(defaultValue || "");
+  const [internalValue, setInternalValue] = useState(defaultValue || '');
   const [isDirty, setIsDirty] = useState(false);
 
   const isControlled = controlledValue !== undefined;
   const value = isControlled ? controlledValue : internalValue;
 
-  const isPassword = type === "password";
-  const inputType = isPassword && showPasswordToggle 
-    ? (showPassword ? "text" : "password") 
-    : type;
+  const isPassword = type === 'password';
+  const inputType =
+    isPassword && showPasswordToggle
+      ? showPassword
+        ? 'text'
+        : 'password'
+      : type;
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!isControlled) {
@@ -96,20 +93,21 @@ export function UiField({
     <Box
       className={className}
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        width: "100%",
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        position: 'relative',
       }}
     >
       {label && (
         <Box
           component="label"
           sx={{
-            display: "block",
-            fontSize: "0.875rem",
+            display: 'block',
+            fontSize: '0.875rem',
             fontWeight: 500,
             mb: 1,
-            color: error ? "error.main" : "text.primary",
+            color: error ? 'error.main' : 'text.primary',
           }}
         >
           {label}
@@ -126,57 +124,60 @@ export function UiField({
         error={error}
         disabled={disabled}
         type={inputType}
-        size={size === "sm" ? "small" : "medium"}
+        size={size === 'sm' ? 'small' : 'medium'}
         sx={{
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "12px",
+          '& .MuiOutlinedInput-root': {
+            borderRadius: '12px',
             height: sizeMap[size],
-            "& fieldset": { 
-              borderColor: error ? "error.main" : "#e2e8f0",
+            '& fieldset': {
+              borderColor: error ? 'error.main' : '#e2e8f0',
               borderWidth: error ? 2 : 1,
             },
-            "&:hover fieldset": {
-              borderColor: error ? "error.dark" : "primary.main",
+            '&:hover fieldset': {
+              borderColor: error ? 'error.dark' : 'primary.main',
             },
-            "&.Mui-focused fieldset": {
-              borderColor: error ? "error.main" : "primary.main",
+            '&.Mui-focused fieldset': {
+              borderColor: error ? 'error.main' : 'primary.main',
             },
           },
-          "& .MuiInputBase-input": {
-            padding: size === "sm" 
-              ? "8px 4px" 
-              : size === "lg" 
-                ? "14px 16px"
-                : "12px 14px",
+          '& .MuiInputBase-input': {
+            padding:
+              size === 'sm'
+                ? '8px 4px'
+                : size === 'lg'
+                  ? '14px 16px'
+                  : '12px 14px',
           },
           ...textFieldProps?.sx,
         }}
         slotProps={{
           input: {
             startAdornment: startIcon && (
-              <Box sx={{ display: "flex", alignItems: "center", }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
                 {startIcon}
               </Box>
             ),
             endAdornment: (
-              <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 {endIcon}
                 {isPassword && showPasswordToggle && (
-                  <Box
-                    component="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    sx={{
-                      border: "none",
-                      background: "transparent",
-                      cursor: "pointer",
-                      p: 0.5,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
+                  <IconButton
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowPassword(!showPassword);
                     }}
+                    onMouseDown={(e) => e.preventDefault()}
+                    size="small"
+                    edge="end"
+                    sx={{ p: 0.5 }}
                   >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </Box>
+                    {showPassword ? (
+                      <Visibility fontSize="small" />
+                    ) : (
+                      <VisibilityOff fontSize="small" />
+                    )}
+                  </IconButton>
                 )}
               </Box>
             ),
@@ -185,26 +186,23 @@ export function UiField({
       />
 
       {error && errorMessage && (
-        <UiFieldError>{errorMessage}</UiFieldError>
+        <UiFieldError overlay>{errorMessage}</UiFieldError>
       )}
 
       {!error && helperText && (
         <Box
           sx={{
             mt: 0.5,
-            fontSize: "0.75rem",
-            color: "text.secondary",
+            fontSize: '0.75rem',
+            color: 'text.secondary',
           }}
         >
           {helperText}
         </Box>
       )}
 
-{isPassword && validationRules.length > 0 && value && (
-        <PasswordMeter 
-          value={value} 
-          rules={validationRules} 
-        />
+      {isPassword && validationRules.length > 0 && value && (
+        <PasswordMeter value={value} rules={validationRules} />
       )}
     </Box>
   );

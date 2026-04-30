@@ -6,21 +6,16 @@ import { HighlightOff } from "@mui/icons-material";
 
 type UiFieldErrorProps = {
   children: ReactNode;
-  /**
-   * If true, hides the error message but keeps the icon
-   * Useful when you want to show only the error state without text
-   */
   hidden?: boolean;
-  /**
-   * Custom className for additional styling
-   */
   className?: string;
+  overlay?: boolean;
 };
 
 export function UiFieldError({
   children,
   hidden = false,
   className = "",
+  overlay = false,
 }: UiFieldErrorProps) {
   if (!children) return null;
 
@@ -31,10 +26,14 @@ export function UiFieldError({
         display: "flex",
         alignItems: "center",
         gap: 0.5,
-        mt: 0.5,
+        mt: overlay ? 0 : 0.5,
+        position: overlay ? "absolute" : "relative",
+        top: overlay ? "100%" : "auto",
+        left: overlay ? 0 : "auto",
+        zIndex: overlay ? 1 : "auto",
       }}
     >
-      <HighlightOff sx={{ fontSize: 16, color: "error.main" }} />
+      <HighlightOff sx={{ fontSize: 14, color: "error.main" }} />
       {!hidden && (
         <FormHelperText error sx={{ m: 0 }}>
           {children}

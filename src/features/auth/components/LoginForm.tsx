@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useLogin } from "../hooks/useAuth";
 import { AuthCredentials } from "@/types";
 import { UiField, UiFieldError, DEFAULT_PASSWORD_RULES } from "@/components/ui/field";
-import { Button } from "@/components/ui/button/UiButton";
+import { UiButton } from "@/components/ui/button/UiButton";
 
 import { Mail, Lock } from "@mui/icons-material";
 
@@ -110,9 +110,9 @@ export function LoginForm({
         <UiFieldError className="justify-center">{errors.general}</UiFieldError>
       )}
 
-      <Button type="submit" disabled={isLoading} fullWidth>
+      <UiButton type="submit" disabled={isLoading} fullWidth>
         {isLoading ? "Logging in..." : "Login"}
-      </Button>
+      </UiButton>
 
       <p className="text-center text-sm text-gray-600">
         Don't have an account?{" "}

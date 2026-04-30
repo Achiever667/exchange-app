@@ -25,7 +25,7 @@ const sizeStyles = {
   lg: "px-6 py-3 text-lg gap-3",
 };
 
-export function Button({
+export function UiButton({
   children,
   variant = "primary",
   size = "md",
