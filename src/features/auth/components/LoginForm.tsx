@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, FormEvent } from "react";
+import Link from "next/link";
 import { useLogin } from "../hooks/useAuth";
 import { AuthCredentials } from "@/types";
 import { UiField, UiFieldError, DEFAULT_PASSWORD_RULES } from "@/components/ui/field";
+import { Button } from "@/components/ui/button/UiButton";
 
 import { Mail, Lock } from "@mui/icons-material";
 
@@ -98,23 +100,26 @@ export function LoginForm({
         onChange={(value) => handleChange("password", value)}
         disabled={isLoading}
         showPasswordToggle
-validationRules={DEFAULT_PASSWORD_RULES}
+        validationRules={DEFAULT_PASSWORD_RULES}
         error={!!errors.password}
         errorMessage={errors.password}
         startIcon={<Lock sx={{ color: "text.secondary", fontSize: 20 }} />}
       />
 
-      {errors.general && (
+{errors.general && (
         <UiFieldError className="justify-center">{errors.general}</UiFieldError>
       )}
 
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full bg-blue-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-blue-700 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
-      >
+      <Button type="submit" disabled={isLoading} fullWidth>
         {isLoading ? "Logging in..." : "Login"}
-      </button>
+      </Button>
+
+      <p className="text-center text-sm text-gray-600">
+        Don't have an account?{" "}
+        <Link href="/register" className="text-blue-600 hover:underline font-medium">
+          Sign up
+        </Link>
+      </p>
     </form>
   );
 }

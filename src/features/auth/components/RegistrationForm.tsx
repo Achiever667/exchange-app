@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, FormEvent } from "react";
+import Link from "next/link";
 import { useRegister } from "../hooks/useAuth";
 import { RegisterPayload } from "@/types";
 import { UiField, UiFieldError, UiFieldGroup, DEFAULT_PASSWORD_RULES } from "@/components/ui/field";
+import { Button } from "@/components/ui/button/UiButton";
 
 import { 
   Mail, 
@@ -91,11 +93,11 @@ const registerMutation = useRegister();
       newErrors.phoneNumber = "Phone number is required";
     }
 
-    if (!formData.password) {
+if (!formData.password) {
       newErrors.password = "Password is required";
     } else {
-// Validate password rules
-      const allRulesMet = DEFAULT_PASSWORD_RULES.every(rule => rule.test(formData.password));
+      // Validate password rules
+      const allRulesMet = DEFAULT_PASSWORD_RULES.every((rule) => rule.test(formData.password));
       if (!allRulesMet) {
         newErrors.password = "Please meet all password requirements";
       }
@@ -203,17 +205,20 @@ showPasswordToggle
         />
       </UiFieldGroup>
 
-      {errors.general && (
+{errors.general && (
         <UiFieldError className="justify-center">{errors.general}</UiFieldError>
       )}
 
-      <button
-        type="submit"
-        disabled={isLoading}
-        className="w-full bg-blue-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-blue-700 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
-      >
+      <Button type="submit" disabled={isLoading} fullWidth>
         {isLoading ? "Creating account..." : "Create Account"}
-      </button>
+      </Button>
+
+      <p className="text-center text-sm text-gray-600">
+        Already have an account?{" "}
+        <Link href="/login" className="text-blue-600 hover:underline font-medium">
+          Login
+        </Link>
+      </p>
     </form>
   );
 }
