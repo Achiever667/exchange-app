@@ -1,9 +1,4 @@
-/**
- * Global Types - Centralized type definitions for the application
- * Organized by domain
- */
 
-// ============= API Response Envelope =============
 export interface ApiResponse<T> {
   success: boolean;
   data?: T;
@@ -25,7 +20,6 @@ export interface PaginatedResponse<T> {
   };
 }
 
-// ============= Auth Domain =============
 export interface User {
   id: string;
   email: string;
@@ -74,7 +68,6 @@ export interface OTPResponse {
   expiresIn: number;
 }
 
-// ============= Wallet Domain =============
 export type CurrencyCode = 'USD' | 'EUR' | 'GBP' | 'BTC' | 'ETH';
 
 export interface Wallet {
@@ -122,7 +115,6 @@ export interface TransferResponse {
   amount: number;
 }
 
-// ============= Payment Domain =============
 export type PaymentProvider = 'STRIPE' | 'PAYPAL' | 'WISE' | 'COINBASE';
 export type PaymentStatus = 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
 
@@ -161,7 +153,6 @@ export interface WebhookPayload {
   signature: string;
 }
 
-// ============= Error Handling =============
 export interface ApiError {
   code: string;
   message: string;
@@ -169,7 +160,6 @@ export interface ApiError {
   details?: Record<string, any>;
 }
 
-// ============= Request Config =============
 export interface RequestConfig {
   retries?: number;
   timeout?: number;

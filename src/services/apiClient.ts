@@ -1,13 +1,3 @@
-/**
- * API Client - Centralized Axios instance with JWT interceptor
- * Handles all HTTP communication, token management, and error handling
- * 
- * SOLID Principles Applied:
- * - Single Responsibility: Only handles HTTP communication
- * - Dependency Inversion: Services depend on this abstraction, not Axios directly
- * - Open/Closed: Easy to extend with new interceptors
- */
-
 import axios, {
   AxiosInstance,
   AxiosRequestConfig,
@@ -18,14 +8,7 @@ import axios, {
 import { API_CONFIG, STORAGE_KEYS, ERROR_CODES } from '@/constants';
 import { ApiResponse, ApiError, AuthTokens } from '@/types';
 
-/**
- * API Client Class - Centralized HTTP communication layer
- * Manages:
- * - Request/response interceptors
- * - JWT token injection
- * - Token refresh logic
- * - Error standardization
- */
+
 class ApiClient {
   private axiosInstance: AxiosInstance;
   private isRefreshing = false;
@@ -96,7 +79,6 @@ class ApiClient {
           } catch (refreshError) {
             this.failedQueue = [];
             this.clearTokens();
-            // Redirect to login - handled by auth store/context
             return Promise.reject(refreshError);
           } finally {
             this.isRefreshing = false;
@@ -108,9 +90,7 @@ class ApiClient {
     );
   }
 
-  /**
-   * Process queued requests after token refresh
-   */
+
   private processQueue(token: string): void {
     this.failedQueue.forEach((prom) => {
       prom.resolve(token);
@@ -118,9 +98,7 @@ class ApiClient {
     this.failedQueue = [];
   }
 
-  /**
-   * Refresh access token using refresh token
-   */
+
   private async refreshAccessToken(): Promise<string> {
     const refreshToken = this.getRefreshToken();
     if (!refreshToken) {
@@ -133,7 +111,10 @@ class ApiClient {
         { refreshToken }
       );
 
-      const { data: tokens } = response.data;
+      const tokens = response.data.data;
+      if (!tokens) {
+        throw new Error('Failed to refresh tokens');
+      }
       this.setTokens(tokens);
       return tokens.accessToken;
     } catch (error) {
@@ -141,12 +122,9 @@ class ApiClient {
     }
   }
 
-  /**
-   * Format Axios error to standardized ApiError
-   */
+ 
   private formatError(error: AxiosError<any>): ApiError {
     if (error.response) {
-      // Server responded with error status
       const data = error.response.data;
       return {
         code: data?.error?.code || ERROR_CODES.SERVER_ERROR,
@@ -155,14 +133,12 @@ class ApiClient {
         details: data?.error?.details,
       };
     } else if (error.request) {
-      // Request made but no response
       return {
         code: ERROR_CODES.NETWORK_ERROR,
         message: 'No response from server',
         statusCode: 0,
       };
     } else {
-      // Error in request setup
       return {
         code: ERROR_CODES.NETWORK_ERROR,
         message: error.message || 'Network error occurred',
@@ -171,25 +147,19 @@ class ApiClient {
     }
   }
 
-  /**
-   * Token management - Get access token
-   */
+
   private getAccessToken(): string | null {
     if (typeof window === 'undefined') return null;
     return localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
   }
 
-  /**
-   * Token management - Get refresh token
-   */
+
   private getRefreshToken(): string | null {
     if (typeof window === 'undefined') return null;
     return localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
   }
 
-  /**
-   * Token management - Set tokens
-   */
+
   private setTokens(tokens: AuthTokens): void {
     if (typeof window === 'undefined') return;
     localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, tokens.accessToken);

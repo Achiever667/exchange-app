@@ -1,13 +1,5 @@
-/**
- * Shared Hooks - Global hooks used across the application
- * No UI rendering, pure logic
- */
-
 import { useEffect, useState } from 'react';
 
-/**
- * Hook: Check if user is on client (hydration safe)
- */
 export function useIsClient() {
   const [isClient, setIsClient] = useState(false);
 
@@ -18,9 +10,6 @@ export function useIsClient() {
   return isClient;
 }
 
-/**
- * Hook: Debounce a value
- */
 export function useDebounce<T>(value: T, delay: number = 500): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
@@ -35,9 +24,7 @@ export function useDebounce<T>(value: T, delay: number = 500): T {
   return debouncedValue;
 }
 
-/**
- * Hook: Fetch data with error handling
- */
+
 export function useAsync<T, E = string>(
   asyncFunction: () => Promise<T>,
   immediate = true
@@ -70,13 +57,10 @@ export function useAsync<T, E = string>(
   return { execute, status, data, error };
 }
 
-/**
- * Hook: Get local storage value
- */
+
 export function useLocalStorage<T>(key: string, initialValue: T) {
   const [storedValue, setStoredValue] = useState<T>(initialValue);
 
-  // Get stored value on mount
   useEffect(() => {
     try {
       if (typeof window !== 'undefined') {
@@ -90,7 +74,6 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
     }
   }, [key]);
 
-  // Update localStorage when value changes
   const setValue = (value: T | ((val: T) => T)) => {
     try {
       if (typeof window !== 'undefined') {

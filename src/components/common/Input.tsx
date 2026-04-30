@@ -1,8 +1,3 @@
-/**
- * Input Component - Reusable form input with error display
- * SOLID: Single Responsibility - Only renders an input
- */
-
 import { ReactNode } from 'react';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {

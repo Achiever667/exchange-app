@@ -1,11 +1,3 @@
-/**
- * Utility Functions - Helper functions for formatting, validation, etc.
- * Pure functions with no side effects
- */
-
-/**
- * Format currency amount
- */
 export function formatCurrency(
   amount: number,
   currency: string = 'USD',
@@ -19,9 +11,7 @@ export function formatCurrency(
   }).format(amount);
 }
 
-/**
- * Format date to readable string
- */
+
 export function formatDate(date: string | Date, locale: string = 'en-US'): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
   return dateObj.toLocaleDateString(locale, {
@@ -31,9 +21,6 @@ export function formatDate(date: string | Date, locale: string = 'en-US'): strin
   });
 }
 
-/**
- * Format date and time
- */
 export function formatDateTime(date: string | Date, locale: string = 'en-US'): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
   return dateObj.toLocaleString(locale, {
@@ -45,17 +32,12 @@ export function formatDateTime(date: string | Date, locale: string = 'en-US'): s
   });
 }
 
-/**
- * Validate email address
- */
+
 export function isValidEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
 }
 
-/**
- * Validate password strength
- */
 export function validatePassword(password: string): {
   isValid: boolean;
   strength: 'weak' | 'medium' | 'strong';
@@ -97,17 +79,12 @@ export function validatePassword(password: string): {
   };
 }
 
-/**
- * Truncate string with ellipsis
- */
+
 export function truncate(str: string, length: number): string {
   if (str.length <= length) return str;
   return str.substring(0, length) + '...';
 }
 
-/**
- * Format wallet address (show first and last characters)
- */
 export function formatAddress(address: string, showChars: number = 6): string {
   if (address.length <= showChars * 2) return address;
   return (
@@ -117,9 +94,7 @@ export function formatAddress(address: string, showChars: number = 6): string {
   );
 }
 
-/**
- * Convert error to user-friendly message
- */
+
 export function getErrorMessage(error: any): string {
   if (typeof error === 'string') return error;
   if (error?.message) return error.message;
@@ -127,9 +102,7 @@ export function getErrorMessage(error: any): string {
   return 'An unexpected error occurred. Please try again.';
 }
 
-/**
- * Retry async function with exponential backoff
- */
+
 export async function retryWithBackoff<T>(
   fn: () => Promise<T>,
   maxRetries: number = 3,

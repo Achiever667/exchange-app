@@ -1,10 +1,3 @@
-/**
- * Auth Hooks - React Query hooks for auth operations
- * Manages async auth operations and their state
- *
- * SOLID: Single Responsibility - Only handles auth data fetching
- * No UI logic, pure hooks
- */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
@@ -21,9 +14,7 @@ import {
 } from '@/types';
 import { QUERY_KEYS } from '@/constants';
 
-/**
- * Hook: Register new user
- */
+
 export function useRegister() {
   const setUser = useAuthStore((state) => state.setUser);
   const setTokens = useAuthStore((state) => state.setTokens);
@@ -39,9 +30,7 @@ export function useRegister() {
   });
 }
 
-/**
- * Hook: Login user
- */
+
 export function useLogin() {
   const setUser = useAuthStore((state) => state.setUser);
   const setTokens = useAuthStore((state) => state.setTokens);
@@ -57,9 +46,7 @@ export function useLogin() {
   });
 }
 
-/**
- * Hook: Verify OTP
- */
+
 export function useVerifyOtp() {
   const setUser = useAuthStore((state) => state.setUser);
   const setTokens = useAuthStore((state) => state.setTokens);
@@ -75,18 +62,14 @@ export function useVerifyOtp() {
   });
 }
 
-/**
- * Hook: Resend OTP
- */
+
 export function useResendOtp() {
   return useMutation<OTPResponse, ApiError, string>({
     mutationFn: async (email: string) => authApiService.resendOtp(email),
   });
 }
 
-/**
- * Hook: Fetch user profile
- */
+
 export function useProfile() {
   return useQuery<User, ApiError>({
     queryKey: QUERY_KEYS.AUTH.PROFILE,
@@ -96,9 +79,7 @@ export function useProfile() {
   });
 }
 
-/**
- * Hook: Update user profile
- */
+
 export function useUpdateProfile() {
   const setUser = useAuthStore((state) => state.setUser);
   const queryClient = useQueryClient();
@@ -113,9 +94,7 @@ export function useUpdateProfile() {
   });
 }
 
-/**
- * Hook: Logout
- */
+
 export function useLogout() {
   const logout = useAuthStore((state) => state.logout);
 
@@ -131,10 +110,7 @@ export function useLogout() {
   });
 }
 
-/**
- * Hook: Get current auth state
- * Use with useShallow for better performance (React Query best practice)
- */
+
 export function useAuth() {
   return useAuthStore((state) => ({
     user: state.user,
@@ -144,9 +120,7 @@ export function useAuth() {
   }));
 }
 
-/**
- * Hook: Check if user is authenticated
- */
+
 export function useIsAuthenticated() {
   return useAuthStore((state) => state.isAuthenticated);
 }

@@ -1,9 +1,3 @@
-/**
- * Auth Store - Global authentication state management
- * Using Zustand for lightweight, scalable state management
- * 
- * SOLID: Single Responsibility - Only handles auth state
- */
 
 import { create } from 'zustand';
 import { User, AuthTokens } from '@/types';
@@ -16,7 +10,6 @@ interface AuthState {
   isLoading: boolean;
   error: string | null;
 
-  // Actions
   setUser: (user: User | null) => void;
   setTokens: (tokens: AuthTokens) => void;
   setAuthenticated: (isAuth: boolean) => void;
@@ -27,10 +20,6 @@ interface AuthState {
   clearError: () => void;
 }
 
-/**
- * Auth Store using Zustand
- * Manages user data, authentication state, and tokens
- */
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   tokens: null,

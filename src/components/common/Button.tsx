@@ -1,7 +1,3 @@
-/**
- * Button Component - Reusable button with variants
- * SOLID: Single Responsibility - Only renders a button
- */
 
 import { ReactNode } from 'react';
 

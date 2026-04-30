@@ -1,25 +1,10 @@
-/**
- * Auth Components - UI components for authentication
- * Organized by feature for easy scalability
- * 
- * SOLID: Single Responsibility - Each component has one purpose
- * No API calls directly in components
- */
-
 'use client';
 
 import { useState, FormEvent } from 'react';
 import { useLogin } from '../hooks/useAuth';
 import { AuthCredentials } from '@/types';
 
-/**
- * LoginForm Component
- * Handles user login with email and password
- * 
- * Props:
- * - onSuccess: Callback after successful login
- * - isLoading: Controlled loading state (optional)
- */
+
 interface LoginFormProps {
   onSuccess?: () => void;
   isLoading?: boolean;
@@ -33,7 +18,7 @@ export function LoginForm({ onSuccess, isLoading: externalLoading }: LoginFormPr
   const [localError, setLocalError] = useState<string | null>(null);
 
   const loginMutation = useLogin();
-  const isLoading = externalLoading ?? loginMutation.isLoading;
+  const isLoading = externalLoading ?? loginMutation.isPending;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;

@@ -1,8 +1,4 @@
-/**
- * Application Constants - Centralized configuration and constants
- */
 
-// ============= API Configuration =============
 export const API_CONFIG = {
   BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api',
   TIMEOUT: 30000,
@@ -10,7 +6,6 @@ export const API_CONFIG = {
   RETRY_DELAY: 1000,
 } as const;
 
-// ============= Auth Endpoints =============
 export const AUTH_ENDPOINTS = {
   REGISTER: '/auth/register',
   LOGIN: '/auth/login',
@@ -22,7 +17,6 @@ export const AUTH_ENDPOINTS = {
   UPDATE_PROFILE: '/auth/profile/update',
 } as const;
 
-// ============= Wallet Endpoints =============
 export const WALLET_ENDPOINTS = {
   GET_WALLETS: '/wallets',
   GET_WALLET: '/wallets/:id',
@@ -33,7 +27,6 @@ export const WALLET_ENDPOINTS = {
   GET_TRANSACTION_DETAILS: '/wallets/transactions/:id',
 } as const;
 
-// ============= Payment Endpoints =============
 export const PAYMENT_ENDPOINTS = {
   INITIATE_PAYMENT: '/payments/initiate',
   GET_PAYMENT_STATUS: '/payments/:id/status',
@@ -42,7 +35,6 @@ export const PAYMENT_ENDPOINTS = {
   GET_PAYMENT_HISTORY: '/payments/history',
 } as const;
 
-// ============= Local Storage Keys =============
 export const STORAGE_KEYS = {
   ACCESS_TOKEN: 'access_token',
   REFRESH_TOKEN: 'refresh_token',
@@ -50,7 +42,6 @@ export const STORAGE_KEYS = {
   AUTH_STATE: 'auth_state',
 } as const;
 
-// ============= Query Keys - React Query =============
 export const QUERY_KEYS = {
   AUTH: {
     USER: ['auth', 'user'],
@@ -70,7 +61,6 @@ export const QUERY_KEYS = {
   },
 } as const;
 
-// ============= Enums =============
 export enum UserKYCStatus {
   PENDING = 'PENDING',
   VERIFIED = 'VERIFIED',
@@ -114,7 +104,6 @@ export enum Currency {
   ETH = 'ETH',
 }
 
-// ============= Error Codes =============
 export const ERROR_CODES = {
   UNAUTHORIZED: 'UNAUTHORIZED',
   FORBIDDEN: 'FORBIDDEN',
@@ -127,14 +116,12 @@ export const ERROR_CODES = {
   INVALID_PAYMENT_METHOD: 'INVALID_PAYMENT_METHOD',
 } as const;
 
-// ============= Pagination Defaults =============
 export const PAGINATION = {
   PAGE_SIZE: 20,
   DEFAULT_PAGE: 1,
   MAX_PAGE_SIZE: 100,
 } as const;
 
-// ============= Token Expiration Times (in seconds) =============
 export const TOKEN_EXPIRATION = {
   ACCESS_TOKEN: 3600, // 1 hour
   REFRESH_TOKEN: 604800, // 7 days

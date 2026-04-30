@@ -100,7 +100,7 @@ function DashboardContent() {
             <div className="space-y-4">
               <div>
                 <p className="text-sm text-gray-600">Total Wallets</p>
-                <p className="text-2xl font-bold text-blue-600">{wallets?.length || 0}</p>
+                {/* <p className="text-2xl font-bold text-blue-600">{wallets?.length}</p> */}
               </div>
             </div>
           </div>

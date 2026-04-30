@@ -1,10 +1,3 @@
-/**
- * Wallet API Service - Wallet domain API calls
- * Handles all wallet-related operations (balances, transfers, transactions)
- * 
- * SOLID: Single Responsibility - Only wallet API calls
- */
-
 import { apiClient } from '@/services/apiClient';
 import {
   Wallet,
