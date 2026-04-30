@@ -1,6 +1,4 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useCallback } from 'react';
 import authApiService from '../api/authApi';
 import { useAuthStore } from '../store';
 import {
@@ -88,7 +86,6 @@ export function useUpdateProfile() {
     mutationFn: async (data: Partial<User>) => authApiService.updateProfile(data),
     onSuccess: (data) => {
       setUser(data);
-      // Invalidate and refetch the profile query
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AUTH.PROFILE });
     },
   });
@@ -102,7 +99,6 @@ export function useLogout() {
     mutationFn: async () => authApiService.logout(),
     onSuccess: () => {
       logout();
-      // Optional: Redirect to login page
       if (typeof window !== 'undefined') {
         window.location.href = '/login';
       }
