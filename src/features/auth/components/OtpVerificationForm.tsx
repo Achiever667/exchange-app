@@ -9,6 +9,7 @@ import { UiPinInput } from "@/components/ui/pin-input/UiPinInput";
 import { UiButton } from "@/components/ui/button/UiButton";
 import { UiFieldError } from "@/components/ui/field";
 import { EmailOutlined, LogoutOutlined, RefreshOutlined } from "@mui/icons-material";
+import { maskEmail } from "@/lib/utils";
 
 const RESEND_OTP_TIMEOUT = 60; // seconds
 
@@ -69,17 +70,15 @@ export function OtpVerificationForm({ onSuccess }: OtpVerificationFormProps) {
 
   return (
     <Box className="w-full max-w-md mx-auto">
-      {/* Email Chip Display */}
       <Box className="flex items-center justify-center mb-10">
         <Box className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-100 rounded-full">
           <EmailOutlined className="text-blue-500" sx={{ fontSize: 18 }} />
           <Typography variant="body2" className="font-semibold text-blue-700 truncate max-w-[200px]">
-            {email}
+            {maskEmail(email)}
           </Typography>
         </Box>
       </Box>
 
-      {/* Input Area */}
       <Box className="space-y-8">
         <Box className="flex flex-col items-center">
           <UiPinInput
@@ -114,7 +113,6 @@ export function OtpVerificationForm({ onSuccess }: OtpVerificationFormProps) {
         </UiButton>
       </Box>
 
-      {/* Utilities Section */}
       <Box className="mt-10 space-y-6">
         <Box className="flex flex-col items-center gap-3">
           {timeRemaining > 0 ? (
@@ -154,7 +152,7 @@ export function OtpVerificationForm({ onSuccess }: OtpVerificationFormProps) {
           </UiButton>
 
           <Link
-            href="/login"
+            href="/auth/login"
             className="block text-center text-xs text-gray-500 hover:text-blue-600 hover:underline transition-colors"
           >
             Not your email? Back to Login

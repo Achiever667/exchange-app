@@ -132,7 +132,6 @@ export function RegistrationForm({
         </div>
       </UiFieldGroup>
 
-      {/* SECURITY SECTION */}
       <UiFieldGroup>
         <div className="grid grid-cols-1 lg:grid-cols-1 gap-4">
           <Controller
@@ -191,7 +190,7 @@ export function RegistrationForm({
       <p className="text-center text-sm text-gray-600">
         Already have an account?{" "}
         <Link
-          href="/login"
+          href="/auth/login"
           className="text-blue-600 hover:underline font-medium"
         >
           Login
