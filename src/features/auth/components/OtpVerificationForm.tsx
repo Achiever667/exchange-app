@@ -16,6 +16,7 @@ interface OtpVerificationFormProps {
   onSuccess?: () => void;
 }
 
+
 export function OtpVerificationForm({ onSuccess }: OtpVerificationFormProps) {
   const searchParams = useSearchParams();
 //   const email = searchParams.get("email") || "";
