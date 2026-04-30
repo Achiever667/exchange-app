@@ -3,9 +3,10 @@
 import { useState, FormEvent } from "react";
 import { useLogin } from "../hooks/useAuth";
 import { AuthCredentials } from "@/types";
-import { Input as UiInput } from "@/components/ui/UiInput";
+import { Input as UiInput } from "@/components/ui/input/UiInput";
 
 import { Mail, Lock } from "@mui/icons-material";
+import { UiSelect } from "@/components/ui/input/UiSelectInput";
 
 interface LoginFormProps {
   onSuccess?: () => void;
@@ -39,6 +40,13 @@ export function LoginForm({
     }));
     setLocalError(null);
   };
+
+  const [age, setAge] = useState("");
+
+const handleSearch = (query: string) => {
+  console.log("Searching for:", query);
+  // Fetch new options here
+};
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -83,6 +91,19 @@ export function LoginForm({
         error={!!errorMessage && !formData.email}
         helperText={!formData.email && errorMessage ? "Email is required" : ""}
       />
+
+      <UiSelect
+  label="Select Age"
+  value={age}
+  onChange={(val) => setAge(val)}
+  onSearch={handleSearch}
+  options={[
+    { label: "Ten", value: 10 },
+    { label: "Twenty", value: 20 },
+    { label: "Thirty", value: 30 },
+  ]}
+  placeholder="Choose an age..."
+/>
 
       {/* ✅ Password with Dynamic Rules */}
       <UiInput

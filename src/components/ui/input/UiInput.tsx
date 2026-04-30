@@ -16,7 +16,6 @@ import {
   HighlightOff 
 } from "@mui/icons-material";
 
-// Define the shape of our rules
 type PasswordRule = {
   label: string;
   test: (value: string) => boolean;
