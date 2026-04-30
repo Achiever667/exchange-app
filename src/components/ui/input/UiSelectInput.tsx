@@ -1,118 +1,137 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import * as React from "react";
 import {
-  Autocomplete,
-  TextField,
   Box,
-  CircularProgress,
-  Typography,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  TextField,
 } from "@mui/material";
+
 import { debounce } from "@/lib/utils";
 
-interface Option {
+type Option = {
   label: string;
   value: string | number;
-}
+};
 
-interface UiSelectProps {
-  options: Option[];
-  value: any;
-  onChange: (value: any) => void;
-  onSearch?: (query: string) => void;
+type UiSelectProps = {
   label?: string;
-  placeholder?: string;
+  value: string | number;
+  options: Option[];
+
+  onChange: (value: string | number) => void;
+
   disabled?: boolean;
   error?: boolean;
-  helperText?: string;
-  size?: "small" | "medium";
-  loading?: boolean;
-  labelVariant?: "block" | "inline";
-}
+
+  size?: "sm" | "md" | "lg";
+
+  searchable?: boolean;
+  onSearch?: (query: string) => Promise<Option[]> | void;
+};
 
 export function UiSelect({
-  options,
-  value,
-  onChange,
-  onSearch,
   label,
-  placeholder,
-  disabled = false,
-  error = false,
-  helperText,
-  size = "small",
-  loading = false,
-  labelVariant = "block",
+  value,
+  options,
+  onChange,
+  disabled,
+  error,
+  size = "md",
+  searchable = false,
+  onSearch,
 }: UiSelectProps) {
-  
-  // Find the selected option object based on the value passed
-  const selectedOption = options.find((opt) => opt.value === value) || null;
+  const [search, setSearch] = React.useState("");
+  const [filteredOptions, setFilteredOptions] = React.useState(options);
 
-  // Handle Search with Debounce
-  const debouncedSearch = useMemo(
-    () => (onSearch ? debounce((query: string) => onSearch(query), 500) : null),
-    [onSearch]
+  // 🔎 Debounced search
+  const debouncedSearch = React.useMemo(
+    () =>
+      debounce(async (query: string) => {
+        if (!onSearch) {
+          // local filter fallback
+          setFilteredOptions(
+            options.filter((opt) =>
+              opt.label.toLowerCase().includes(query.toLowerCase())
+            )
+          );
+          return;
+        }
+
+        const result = await onSearch(query);
+        if (result) setFilteredOptions(result);
+      }, 300),
+    [options, onSearch]
   );
 
-  const handleInputChange = (event: any, newInputValue: string) => {
-    if (debouncedSearch) {
-      debouncedSearch(newInputValue);
-    }
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearch(query);
+    debouncedSearch(query);
+  };
+
+  const handleChange = (event: SelectChangeEvent) => {
+    onChange(event.target.value as string);
+  };
+
+  const sizeMap = {
+    sm: 36,
+    md: 44,
+    lg: 52,
   };
 
   return (
-    <Box className="w-full">
-      {/* External Label Logic */}
-      {label && labelVariant === "block" && (
-        <label className="block text-sm font-medium mb-1.5 text-gray-700">
-          {label}
-        </label>
-      )}
-
-      <Autocomplete
-        options={options}
+    <Box sx={{ minWidth: 120 }}>
+      <FormControl
+        fullWidth
+        error={error}
         disabled={disabled}
-        loading={loading}
-        value={selectedOption}
-        onChange={(_, newValue) => onChange(newValue?.value ?? "")}
-        onInputChange={handleInputChange}
-        getOptionLabel={(option) => option.label}
-        isOptionEqualToValue={(option, value) => option.value === value.value}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            error={error}
-            helperText={helperText}
-            placeholder={placeholder}
-            label={labelVariant === "inline" ? label : undefined}
-            size={size}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "12px", // Matching your design language
-                backgroundColor: disabled ? "#f8fafc" : "transparent",
-                "& fieldset": { borderColor: "#e2e8f0" },
-                "&:hover fieldset": { borderColor: "#cbd5e1" },
+        size={size === "sm" ? "small" : "medium"}
+      >
+        {label && <InputLabel>{label}</InputLabel>}
+
+        <Select
+          value={value}
+          onChange={handleChange}
+          label={label}
+          sx={{
+            borderRadius: 2,
+            height: sizeMap[size],
+          }}
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                borderRadius: 2,
+                padding: searchable ? 1 : 0,
               },
-            }}
-            slotProps={{
-              input: {
-                ...params.inputProps,
-                endAdornment: (
-                  <React.Fragment>
-                    {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                    {params.inputProps?.endAdornment}
-                  </React.Fragment>
-                ),
-              },
-            }}
-          />
-        )}
-        renderOption={(props, option) => (
-          <Box component="li" {...props} key={option.value}>
-            <Typography variant="body2">{option.label}</Typography>
-          </Box>
-        )}
-      />
+            },
+          }}
+        >
+          {/* 🔎 Search box inside dropdown */}
+          {searchable && (
+            <Box px={1} pb={1}>
+              <TextField
+                size="small"
+                fullWidth
+                placeholder="Search..."
+                value={search}
+                onChange={handleSearch}
+                autoFocus
+              />
+            </Box>
+          )}
+
+          {filteredOptions.map((opt) => (
+            <MenuItem key={opt.value} value={opt.value}>
+              {opt.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
     </Box>
   );
 }
