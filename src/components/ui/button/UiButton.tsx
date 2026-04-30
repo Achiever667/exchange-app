@@ -5,7 +5,7 @@ import { CircularProgress } from "@mui/material";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  variant?: "primary" | "secondary" | "danger";
+  variant?: "primary" | "secondary" | "danger" | "ghost";
   size?: "sm" | "md" | "lg";
   isLoading?: boolean;
   fullWidth?: boolean;
@@ -17,6 +17,7 @@ const variantStyles = {
   primary: "bg-blue-600 text-white hover:bg-blue-700",
   secondary: "bg-gray-200 text-gray-900 hover:bg-gray-300",
   danger: "bg-red-600 text-white hover:bg-red-700",
+  ghost: "bg-transparent text-gray-700 hover:bg-gray-100 border border-gray-300",
 };
 
 const sizeStyles = {

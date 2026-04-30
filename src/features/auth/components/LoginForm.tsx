@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useLogin } from "../hooks/useAuth";
-import { AuthCredentials } from "@/types";
 import { UiField, UiFieldError, DEFAULT_PASSWORD_RULES } from "@/components/ui/field";
 import { UiButton } from "@/components/ui/button/UiButton";
 
 import { Mail, Lock } from "@mui/icons-material";
+import { loginSchema, LoginCredentials } from "../schemas/loginSchema";
 
 interface LoginFormProps {
   onSuccess?: () => void;
@@ -18,99 +19,74 @@ export function LoginForm({
   onSuccess,
   isLoading: externalLoading,
 }: LoginFormProps) {
-  const [formData, setFormData] = useState<AuthCredentials>({
-    email: "",
-    password: "",
+  const loginMutation = useLogin();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isValid },
+    setError,
+  } = useForm<LoginCredentials>({
+    resolver: zodResolver(loginSchema),
+    mode: "onChange",
   });
 
-  const [errors, setErrors] = useState<{
-    email?: string;
-    password?: string;
-    general?: string;
-  }>({});
-
-  const loginMutation = useLogin();
   const isLoading = externalLoading ?? loginMutation.isPending;
 
-  const handleChange = (name: keyof AuthCredentials, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    // Clear individual field error when user starts typing
-    setErrors((prev) => ({
-      ...prev,
-      [name]: undefined,
-      general: undefined,
-    }));
-  };
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    
-    const newErrors: typeof errors = {};
-
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
-// Validate password rules
-    const allRulesMet = DEFAULT_PASSWORD_RULES.every(rule => rule.test(formData.password));
-    if (!allRulesMet) {
-      setErrors({ password: "Please meet all password requirements" });
-      return;
-    }
-
+  const onSubmit = async (data: LoginCredentials) => {
     try {
-      await loginMutation.mutateAsync(formData);
+      await loginMutation.mutateAsync(data);
       onSuccess?.();
     } catch (error: any) {
-      setErrors({ general: error.message || "Login failed" });
+      setError("root", {
+        message: error.message || "Login failed",
+      });
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-md space-y-6">
-      <UiField
-        label="Email"
-        placeholder="you@example.com"
-        type="email"
-        value={formData.email}
-        onChange={(value) => handleChange("email", value)}
-        disabled={isLoading}
-        error={!!errors.email}
-        errorMessage={errors.email}
-        startIcon={<Mail sx={{ color: "text.secondary", fontSize: 20 }} />}
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-md space-y-6">
+      <Controller
+        name="email"
+        control={control}
+        render={({ field }) => (
+          <UiField
+            {...field}
+            label="Email"
+            placeholder="you@example.com"
+            type="email"
+            disabled={isLoading}
+            error={!!errors.email}
+            errorMessage={errors.email?.message}
+            startIcon={<Mail sx={{ color: "text.secondary", fontSize: 20 }} />}
+          />
+        )}
       />
 
-      <UiField
-        label="Password"
-        placeholder="••••••••"
-        type="password"
-        value={formData.password}
-        onChange={(value) => handleChange("password", value)}
-        disabled={isLoading}
-        showPasswordToggle
-        validationRules={DEFAULT_PASSWORD_RULES}
-        error={!!errors.password}
-        errorMessage={errors.password}
-        startIcon={<Lock sx={{ color: "text.secondary", fontSize: 20 }} />}
+      <Controller
+        name="password"
+        control={control}
+        render={({ field }) => (
+          <UiField
+            {...field}
+            label="Password"
+            placeholder="••••••••"
+            type="password"
+            disabled={isLoading}
+            showPasswordToggle
+            validationRules={DEFAULT_PASSWORD_RULES}
+            error={!!errors.password}
+            errorMessage={errors.password?.message}
+            startIcon={<Lock sx={{ color: "text.secondary", fontSize: 20 }} />}
+          />
+        )}
       />
 
-{errors.general && (
-        <UiFieldError className="justify-center">{errors.general}</UiFieldError>
+      {errors.root && (
+        <UiFieldError className="justify-center">{errors.root.message}</UiFieldError>
       )}
 
-      <UiButton type="submit" disabled={isLoading} fullWidth>
+      <UiButton type="submit" disabled={isLoading || !isValid} fullWidth>
         {isLoading ? "Logging in..." : "Login"}
       </UiButton>
 

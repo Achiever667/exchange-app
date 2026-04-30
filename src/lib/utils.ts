@@ -136,3 +136,19 @@ export async function retryWithBackoff<T>(
   throw lastError;
 }
 
+/**
+ * Masks an email address for privacy.
+ * Example: "john.doe@example.com" -> "jo*******@example.com"
+ * 
+ * @param email - The full email string to mask
+ * @param visibleChars - How many characters to show at the start (default: 2)
+ * @returns The masked email string
+ */
+export const maskEmail = (email: string, visibleChars: number = 2): string => {
+  if (!email || !email.includes("@")) return email;
+  const [localPart, domain] = email.split("@");
+  const charsToShow = localPart.length <= visibleChars ? 1 : visibleChars;
+  const visible = localPart.slice(0, charsToShow);
+  const masked = "*".repeat(Math.max(localPart.length - charsToShow, 5)); // Ensure at least 5 stars
+  return `${visible}${masked}@${domain}`;
+};
