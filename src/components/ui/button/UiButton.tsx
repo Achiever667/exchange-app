@@ -9,7 +9,6 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: "sm" | "md" | "lg";
   isLoading?: boolean;
   fullWidth?: boolean;
-  // Added Icon Props
   startIcon?: ReactNode;
   endIcon?: ReactNode;
 }
@@ -58,12 +57,10 @@ export function Button({
         </>
       ) : (
         <>
-          {/* Start Icon */}
           {startIcon && <span className="flex items-center">{startIcon}</span>}
           
           {children}
           
-          {/* End Icon */}
           {endIcon && <span className="flex items-center">{endIcon}</span>}
         </>
       )}
