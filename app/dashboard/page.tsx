@@ -21,7 +21,7 @@ import { useWallets, useTransferFunds } from '@/features/wallet';
 import { useInitiatePayment, usePaymentStatus } from '@/features/payment';
 import { WalletList } from '@/features/wallet/components/WalletList';
 import { PaymentInitiationForm } from '@/features/payment/components/PaymentInitiation';
-import { Button } from '@/components/common/Button';
+import { UiButton } from '@/components/ui/button/UiButton';
 import { useAuthStore } from '@/features/auth/store';
 
 /**
@@ -45,9 +45,9 @@ export default function WalletDashboard() {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
           <p className="text-gray-600">Please log in to access your wallets.</p>
-          <Button className="mt-4" onClick={() => window.location.href = '/'}>
+          <UiButton className="mt-4" onClick={() => window.location.href = '/'}>
             Go to Login
-          </Button>
+          </UiButton>
         </div>
       </div>
     );
@@ -81,28 +81,28 @@ export default function WalletDashboard() {
             <div className="bg-white rounded-lg shadow p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
               <div className="space-y-3">
-                <Button
+                <UiButton
                   fullWidth
                   variant="primary"
                   onClick={() => setShowPaymentForm(!showPaymentForm)}
                   disabled={!selectedWalletId}
                 >
                   Deposit Funds
-                </Button>
-                <Button
+                </UiButton>
+                <UiButton
                   fullWidth
                   variant="secondary"
                   disabled={!selectedWalletId}
                 >
                   Transfer
-                </Button>
-                <Button
+                </UiButton>
+                <UiButton
                   fullWidth
                   variant="secondary"
                   disabled={!selectedWalletId}
                 >
                   Withdraw
-                </Button>
+                </UiButton>
               </div>
               {!selectedWalletId && (
                 <p className="text-xs text-gray-500 mt-3">

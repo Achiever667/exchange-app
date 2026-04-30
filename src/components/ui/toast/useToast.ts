@@ -5,7 +5,7 @@ import { ToastContext } from "./toastContext";
 import { ToastContextValue } from "./types";
 
 export function useToast(): ToastContextValue {
-  const context = useContext(ToastContext) as ToastContextValue;
+  const context = useContext(ToastContext);
   
   if (!context) {
     throw new Error("useToast must be used within a ToastProvider");
