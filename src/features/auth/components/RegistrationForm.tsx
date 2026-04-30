@@ -3,7 +3,7 @@
 import { useState, FormEvent } from "react";
 import { useRegister } from "../hooks/useAuth";
 import { RegisterPayload } from "@/types";
-import { UiField, UiFieldError, UiFieldGroup } from "@/components/ui/field";
+import { UiField, UiFieldError, UiFieldGroup, DEFAULT_PASSWORD_RULES } from "@/components/ui/field";
 
 import { 
   Mail, 
@@ -45,14 +45,8 @@ export function RegistrationForm({
     general?: string;
   }>({});
 
-  const registerMutation = useRegister();
+const registerMutation = useRegister();
   const isLoading = externalLoading ?? registerMutation.isPending;
-
-  const passwordRules = [
-    { label: "Minimum 8 characters", test: (v: string) => v.length >= 8 },
-    { label: "At least one number", test: (v: string) => /\d/.test(v) },
-    { label: "At least one special character", test: (v: string) => /[!@#$%^&*(),.?":{}|<>]/.test(v) },
-  ];
 
   type FieldName = keyof typeof formData | "confirmPassword";
 
@@ -100,8 +94,8 @@ export function RegistrationForm({
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else {
-      // Validate password rules
-      const allRulesMet = passwordRules.every(rule => rule.test(formData.password));
+// Validate password rules
+      const allRulesMet = DEFAULT_PASSWORD_RULES.every(rule => rule.test(formData.password));
       if (!allRulesMet) {
         newErrors.password = "Please meet all password requirements";
       }
@@ -188,8 +182,8 @@ export function RegistrationForm({
           value={formData.password}
           onChange={(value) => handleChange("password", value)}
           disabled={isLoading}
-          showPasswordToggle
-          validationRules={passwordRules}
+showPasswordToggle
+          validationRules={DEFAULT_PASSWORD_RULES}
           error={!!errors.password}
           errorMessage={errors.password}
           startIcon={<Lock sx={{ color: "text.secondary", fontSize: 20 }} />}

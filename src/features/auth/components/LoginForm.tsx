@@ -3,7 +3,7 @@
 import { useState, FormEvent } from "react";
 import { useLogin } from "../hooks/useAuth";
 import { AuthCredentials } from "@/types";
-import { UiField, UiFieldError } from "@/components/ui/field";
+import { UiField, UiFieldError, DEFAULT_PASSWORD_RULES } from "@/components/ui/field";
 
 import { Mail, Lock } from "@mui/icons-material";
 
@@ -29,12 +29,6 @@ export function LoginForm({
 
   const loginMutation = useLogin();
   const isLoading = externalLoading ?? loginMutation.isPending;
-
-  const passwordRules = [
-    { label: "Minimum 8 characters", test: (v: string) => v.length >= 8 },
-    { label: "At least one number", test: (v: string) => /\d/.test(v) },
-    { label: "At least one special character", test: (v: string) => /[!@#$%^&*(),.?":{}|<>]/.test(v) },
-  ];
 
   const handleChange = (name: keyof AuthCredentials, value: string) => {
     setFormData((prev) => ({
@@ -67,8 +61,8 @@ export function LoginForm({
       return;
     }
 
-    // Validate password rules
-    const allRulesMet = passwordRules.every(rule => rule.test(formData.password));
+// Validate password rules
+    const allRulesMet = DEFAULT_PASSWORD_RULES.every(rule => rule.test(formData.password));
     if (!allRulesMet) {
       setErrors({ password: "Please meet all password requirements" });
       return;
@@ -104,7 +98,7 @@ export function LoginForm({
         onChange={(value) => handleChange("password", value)}
         disabled={isLoading}
         showPasswordToggle
-        validationRules={passwordRules}
+validationRules={DEFAULT_PASSWORD_RULES}
         error={!!errors.password}
         errorMessage={errors.password}
         startIcon={<Lock sx={{ color: "text.secondary", fontSize: 20 }} />}

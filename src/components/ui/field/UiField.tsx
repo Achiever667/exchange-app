@@ -4,97 +4,39 @@ import { ReactNode, ChangeEvent } from "react";
 import { Box, TextField, TextFieldProps } from "@mui/material";
 import { 
   Visibility, 
-  VisibilityOff, 
-  CheckCircle,
-  HighlightOff 
+  VisibilityOff 
 } from "@mui/icons-material";
 import { useState } from "react";
 
 import { UiFieldError } from "./UiFieldError";
+import { PasswordMeter, DEFAULT_PASSWORD_RULES, type PasswordValidationRules } from "../password";
 
-type PasswordRule = {
-  label: string;
-  test: (value: string) => boolean;
-};
+type PasswordRule = PasswordValidationRules[number];
 
 type Size = "sm" | "md" | "lg";
 
 type UiFieldProps = {
-  /**
-   * Label for the field
-   */
+
   label?: string;
-  /**
-   * Placeholder text
-   */
   placeholder?: string;
-  /**
-   * Error state
-   */
   error?: boolean;
-  /**
-   * Error message to display
-   */
   errorMessage?: string;
-  /**
-   * Helper text to display below the field
-   */
   helperText?: string;
-  /**
-   * If disabled, the field is not interactive
-   */
   disabled?: boolean;
-  /**
-   * Size of the field
-   */
   size?: Size;
-  /**
-   * Field type (text, password, email, etc.)
-   */
   type?: string;
-  /**
-   * Show password toggle icon
-   */
   showPasswordToggle?: boolean;
-  /**
-   * Validation rules for password
-   */
   validationRules?: PasswordRule[];
-  /**
-   * Start icon
-   */
   startIcon?: ReactNode;
-  /**
-   * End icon
-   */
   endIcon?: ReactNode;
-  /**
-   * Value of the field
-   */
   value?: string;
-  /**
-   * Default value (uncontrolled)
-   */
   defaultValue?: string;
-  /**
-   * Change handler
-   */
   onChange?: (value: string) => void;
-  /**
-   * Blur handler
-   */
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
-  /**
-   * Additional TextField props
-   */
   textFieldProps?: Partial<TextFieldProps>;
-  /**
-   * Custom className
-   */
   className?: string;
 };
 
-// Size map matching UiSelectInput sizes
 const sizeMap: Record<Size, number> = {
   sm: 36,
   md: 44,
@@ -125,7 +67,6 @@ export function UiField({
   const [internalValue, setInternalValue] = useState(defaultValue || "");
   const [isDirty, setIsDirty] = useState(false);
 
-  // Controlled vs uncontrolled
   const isControlled = controlledValue !== undefined;
   const value = isControlled ? controlledValue : internalValue;
 
@@ -160,7 +101,6 @@ export function UiField({
         width: "100%",
       }}
     >
-      {/* Label */}
       {label && (
         <Box
           component="label"
@@ -176,7 +116,6 @@ export function UiField({
         </Box>
       )}
 
-      {/* Input Field */}
       <TextField
         {...textFieldProps}
         fullWidth
@@ -205,7 +144,7 @@ export function UiField({
           },
           "& .MuiInputBase-input": {
             padding: size === "sm" 
-              ? "8px 12px" 
+              ? "8px 4px" 
               : size === "lg" 
                 ? "14px 16px"
                 : "12px 14px",
@@ -215,7 +154,7 @@ export function UiField({
         slotProps={{
           input: {
             startAdornment: startIcon && (
-              <Box sx={{ display: "flex", alignItems: "center", mr: 1 }}>
+              <Box sx={{ display: "flex", alignItems: "center", }}>
                 {startIcon}
               </Box>
             ),
@@ -245,12 +184,10 @@ export function UiField({
         }}
       />
 
-      {/* Error Message */}
       {error && errorMessage && (
         <UiFieldError>{errorMessage}</UiFieldError>
       )}
 
-      {/* Helper Text (non-error) */}
       {!error && helperText && (
         <Box
           sx={{
@@ -263,39 +200,11 @@ export function UiField({
         </Box>
       )}
 
-      {isPassword && isDirty && validationRules.length > 0 && (
-        <Box
-          sx={{
-            mt: 1,
-            display: "flex",
-            flexDirection: "column",
-            gap: 0.5,
-          }}
-        >
-          {validationRules.map((rule, i) => {
-            const isValid = rule.test(value);
-            return (
-              <Box
-                key={i}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 0.5,
-                  fontSize: "0.75rem",
-                  fontWeight: 500,
-                  color: isValid ? "success.main" : "error.main",
-                }}
-              >
-                {isValid ? (
-                  <CheckCircle sx={{ fontSize: 16 }} />
-                ) : (
-                  <HighlightOff sx={{ fontSize: 16 }} />
-                )}
-                {rule.label}
-              </Box>
-            );
-          })}
-        </Box>
+{isPassword && validationRules.length > 0 && value && (
+        <PasswordMeter 
+          value={value} 
+          rules={validationRules} 
+        />
       )}
     </Box>
   );
