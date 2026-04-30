@@ -11,7 +11,7 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useWallets } from '@/features/wallet/hooks/useWallet';
 import { WalletList } from '@/features/wallet/components/WalletList';
 import { LoginForm } from '@/features/auth/components/LoginForm';
-import { Button } from '@/components/common/Button';
+import { Button } from '@/components/ui/UiButton';
 
 /**
  * Dashboard Component - Main application page
