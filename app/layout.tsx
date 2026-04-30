@@ -1,38 +1,31 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { Providers } from "./providers";
-import "./globals.css";
+"use client";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactNode, useState } from "react";
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 
-export const metadata: Metadata = {
-  title: "Exchange App - Production Grade Fintech",
-  description: "Production-grade fintech exchange application",
-};
+export function Providers({ children }: { children: ReactNode }) {
+  const [queryClient] = useState(() => new QueryClient());
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: "#2563eb", 
+      },
+    },
+  });
+
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">
-        <Providers>
+    <QueryClientProvider client={queryClient}>
+      <AppRouterCacheProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
           {children}
-        </Providers>
-      </body>
-    </html>
+        </ThemeProvider>
+      </AppRouterCacheProvider>
+    </QueryClientProvider>
   );
 }
