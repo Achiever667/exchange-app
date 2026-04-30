@@ -141,6 +141,6 @@ export const maskEmail = (email: string, visibleChars: number = 2): string => {
   const [localPart, domain] = email.split("@");
   const charsToShow = localPart.length <= visibleChars ? 1 : visibleChars;
   const visible = localPart.slice(0, charsToShow);
-  const masked = "*".repeat(Math.max(localPart.length - charsToShow, 5)); // Ensure at least 5 stars
+  const masked = "*".repeat(Math.max(localPart.length - charsToShow, 5));
   return `${visible}${masked}@${domain}`;
 };
