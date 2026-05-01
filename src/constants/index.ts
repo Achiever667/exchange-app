@@ -9,8 +9,8 @@ export const API_CONFIG = {
 export const AUTH_ENDPOINTS = {
   REGISTER: '/auth/register',
   LOGIN: '/auth/login',
-  VERIFY_OTP: '/auth/verify-otp',
-  RESEND_OTP: '/auth/resend-otp',
+  VERIFY_OTP: '/auth/verify/otp',
+  RESEND_OTP: '/resend/otp',
   REFRESH_TOKEN: '/auth/refresh-token',
   LOGOUT: '/auth/logout',
   GET_PROFILE: '/auth/profile',

@@ -13,7 +13,7 @@ import {
 import { UiButton } from '@/components/ui/button/UiButton';
 import { useToast } from '@/components/ui/toast';
 
-import { Mail, Lock, Person, Phone } from '@mui/icons-material';
+import { Mail, Lock, Person, Phone, Language } from '@mui/icons-material';
 import { registerSchema, RegisterCredentials } from '../schemas/registerSchema';
 
 interface RegistrationFormProps {
@@ -31,7 +31,7 @@ export function RegistrationForm({
   const {
     control,
     handleSubmit,
-    formState: { errors, isValid, isSubmitting  },
+    formState: { errors, isValid, isSubmitting },
     setError,
   } = useForm<RegisterCredentials>({
     resolver: zodResolver(registerSchema),
@@ -68,7 +68,7 @@ export function RegistrationForm({
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Controller
-            name="first_name"
+            name="firstname"
             control={control}
             render={({ field }) => (
               <UiField
@@ -76,15 +76,15 @@ export function RegistrationForm({
                 label="First Name"
                 placeholder="John"
                 disabled={isSubmitting }
-                error={!!errors.first_name}
-                errorMessage={errors.first_name?.message}
+                error={!!errors.firstname}
+                errorMessage={errors.firstname?.message}
                 startIcon={<Person sx={{ fontSize: 20 }} />}
               />
             )}
           />
 
           <Controller
-            name="last_name"
+            name="lastname"
             control={control}
             render={({ field }) => (
               <UiField
@@ -92,8 +92,26 @@ export function RegistrationForm({
                 label="Last Name"
                 placeholder="Doe"
                 disabled={isSubmitting }
-                error={!!errors.last_name}
-                errorMessage={errors.last_name?.message}
+                error={!!errors.lastname}
+                errorMessage={errors.lastname?.message}
+                startIcon={<Person sx={{ fontSize: 20 }} />}
+              />
+            )}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-1 gap-4 mt-4">
+          <Controller
+            name="username"
+            control={control}
+            render={({ field }) => (
+              <UiField
+                {...field}
+                label="Username"
+                placeholder="johndoe"
+                disabled={isSubmitting }
+                error={!!errors.username}
+                errorMessage={errors.username?.message}
                 startIcon={<Person sx={{ fontSize: 20 }} />}
               />
             )}
@@ -127,12 +145,46 @@ export function RegistrationForm({
               <UiField
                 {...field}
                 label="Phone Number"
-                placeholder="+1234567890"
+                placeholder="08059811404"
                 type="number"
                 disabled={isSubmitting }
                 error={!!errors.phone_number}
                 errorMessage={errors.phone_number?.message}
                 startIcon={<Phone sx={{ fontSize: 20 }} />}
+              />
+            )}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+          <Controller
+            name="dial_code"
+            control={control}
+            render={({ field }) => (
+              <UiField
+                {...field}
+                label="Dial Code"
+                placeholder="+234"
+                disabled={isSubmitting }
+                error={!!errors.dial_code}
+                errorMessage={errors.dial_code?.message}
+startIcon={<Language sx={{ fontSize: 20 }} />}
+              />
+            )}
+          />
+
+          <Controller
+            name="country"
+            control={control}
+            render={({ field }) => (
+              <UiField
+                {...field}
+                label="Country"
+                placeholder="Nigeria"
+                disabled={isSubmitting }
+                error={!!errors.country}
+                errorMessage={errors.country?.message}
+                startIcon={<Language sx={{ fontSize: 20 }} />}
               />
             )}
           />
@@ -161,7 +213,7 @@ export function RegistrationForm({
           />
 
           <Controller
-            name="confirm_password"
+            name="password_confirmation"
             control={control}
             render={({ field }) => (
               <UiField
@@ -171,8 +223,8 @@ export function RegistrationForm({
                 type="password"
                 disabled={isSubmitting }
                 showPasswordToggle
-                error={!!errors.confirm_password}
-                errorMessage={errors.confirm_password?.message}
+                error={!!errors.password_confirmation}
+                errorMessage={errors.password_confirmation?.message}
                 startIcon={<Lock sx={{ fontSize: 20 }} />}
               />
             )}

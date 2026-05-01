@@ -3,15 +3,20 @@ import { DEFAULT_PASSWORD_RULES } from "@/components/ui/field";
 
 export const registerSchema = z
   .object({
-    first_name: z
+    firstname: z
       .string()
       .trim()
       .min(1, "First name is required"),
 
-    last_name: z
+    lastname: z
       .string()
       .trim()
       .min(1, "Last name is required"),
+
+    username: z
+      .string()
+      .trim()
+      .min(1, "Username is required"),
 
     email: z
       .string()
@@ -24,6 +29,16 @@ export const registerSchema = z
       .trim()
       .min(1, "Phone number is required"),
 
+    dial_code: z
+      .string()
+      .trim()
+      .min(1, "Dial code is required"),
+
+    country: z
+      .string()
+      .trim()
+      .min(1, "Country is required"),
+
     password: z
       .string()
       .min(1, "Password is required")
@@ -34,13 +49,13 @@ export const registerSchema = z
         }
       ),
 
-    confirm_password: z
+    password_confirmation: z
       .string()
       .min(1, "Please confirm your password"),
   })
-  .refine((data) => data.password === data.confirm_password, {
+  .refine((data) => data.password === data.password_confirmation, {
     message: "Passwords do not match",
-    path: ["confirm_password"],
+    path: ["password_confirmation"],
   });
 
 export type RegisterCredentials = z.infer<typeof registerSchema>;

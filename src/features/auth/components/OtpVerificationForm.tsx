@@ -22,7 +22,7 @@ interface OtpVerificationFormProps {
 export function OtpVerificationForm({ onSuccess }: OtpVerificationFormProps) {
   const searchParams = useSearchParams();
 //   const email = searchParams.get("email") || "";
-  const email = 'kelechioleh@gmail.com'
+  const email = 'emmanueloleh88@gmail.com' // For testing purposes, replace with actual email from search params in production
 
   const [otp, setOtp] = useState("");
   const [timeRemaining, setTimeRemaining] = useState(RESEND_OTP_TIMEOUT);
