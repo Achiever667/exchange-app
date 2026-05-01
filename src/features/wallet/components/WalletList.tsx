@@ -8,7 +8,8 @@
 'use client';
 
 import { useWallets, useWalletState } from '../hooks/useWallet';
-import { Wallet as WalletType } from '@/types';
+import { Wallet as WalletType, Wallet } from '@/types';
+import { UseQueryResult } from '@tanstack/react-query';
 
 /**
  * WalletListComponent - Display list of wallets
@@ -22,11 +23,15 @@ interface WalletListProps {
 }
 
 export function WalletList({ onWalletSelect, isLoading: externalLoading }: WalletListProps) {
-  const query = useWallets();
+  const query: UseQueryResult<Wallet[], Error> = useWallets();
   const state = useWalletState();
 
   const isLoading = externalLoading ?? query.isLoading ?? state.isLoadingWallets;
-  const wallets = state.wallets.length > 0 ? state.wallets : query.data || [];
+  const wallets: Wallet[] = query.data && Array.isArray(query.data) 
+    ? query.data 
+    : state.wallets.length > 0 
+      ? state.wallets 
+      : [];
 
   if (isLoading) {
     return (

@@ -99,9 +99,9 @@ export function useLogout() {
     mutationFn: async () => authApiService.logout(),
     onSuccess: () => {
       logout();
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login';
-      }
+      // if (typeof window !== 'undefined') {
+      //   window.location.href = '/login';
+      // }
     },
   });
 }

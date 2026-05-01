@@ -1,6 +1,6 @@
 
 export const API_CONFIG = {
-  BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api',
+  BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'https://exchange-app.alwaysdata.net/api',
   TIMEOUT: 30000,
   RETRY_ATTEMPTS: 3,
   RETRY_DELAY: 1000,
@@ -47,12 +47,14 @@ export const QUERY_KEYS = {
     USER: ['auth', 'user'],
     PROFILE: ['auth', 'profile'],
   },
+
   WALLET: {
     WALLETS: ['wallet', 'wallets'],
     WALLET_DETAIL: (id: string) => ['wallet', 'detail', id],
     TRANSACTIONS: (walletId: string) => ['wallet', 'transactions', walletId],
     TRANSACTION_DETAIL: (id: string) => ['wallet', 'transaction', id],
   },
+
   PAYMENT: {
     PAYMENT: (id: string) => ['payment', 'detail', id],
     PAYMENT_STATUS: (id: string) => ['payment', 'status', id],
@@ -123,6 +125,6 @@ export const PAGINATION = {
 } as const;
 
 export const TOKEN_EXPIRATION = {
-  ACCESS_TOKEN: 3600, // 1 hour
-  REFRESH_TOKEN: 604800, // 7 days
+  ACCESS_TOKEN: 3600,
+  REFRESH_TOKEN: 604800,
 } as const;

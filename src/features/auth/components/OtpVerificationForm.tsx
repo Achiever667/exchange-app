@@ -77,7 +77,7 @@ export function OtpVerificationForm({ onSuccess }: OtpVerificationFormProps) {
   };
 
   return (
-    <Box className="w-full max-w-md mx-auto">
+    <Box className="w-full lg:max-w-md">
       <Box className="flex items-center justify-center mb-10">
         <Box className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-100 rounded-full">
           <EmailOutlined className="text-blue-500" sx={{ fontSize: 18 }} />
