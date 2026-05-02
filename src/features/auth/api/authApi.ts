@@ -86,7 +86,6 @@ class AuthApiService {
     try {
       await apiClient.post(AUTH_ENDPOINTS.LOGOUT);
     } catch (error) {
-      // Even if logout fails, we'll clear local tokens
       console.error('Logout failed:', error);
     }
   }

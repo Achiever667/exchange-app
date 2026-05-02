@@ -3,6 +3,7 @@ import authApiService from '../api/authApi';
 import { useAuthStore } from '../store';
 import {
   AuthCredentials,
+  RegisterPayload,
   OTPVerificationPayload,
   AuthResponse,
   User,
@@ -10,7 +11,6 @@ import {
   ApiError,
 } from '@/types';
 import { QUERY_KEYS } from '@/constants';
-import { RegisterCredentials } from '../schemas/registerSchema';
 
 
 export function useRegister() {
@@ -18,8 +18,8 @@ export function useRegister() {
   const setTokens = useAuthStore((state) => state.setTokens);
   const setAuthenticated = useAuthStore((state) => state.setAuthenticated);
 
-  return useMutation<AuthResponse, ApiError, RegisterCredentials>({
-    mutationFn: async (payload: RegisterCredentials) => authApiService.register(payload),
+  return useMutation<AuthResponse, ApiError, RegisterPayload>({
+    mutationFn: async (payload: RegisterPayload) => authApiService.register(payload),
     onSuccess: (data) => {
       setUser(data.user);
       setTokens(data.tokens);

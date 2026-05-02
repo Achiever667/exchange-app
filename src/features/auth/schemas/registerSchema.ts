@@ -52,6 +52,8 @@ export const registerSchema = z
     password_confirmation: z
       .string()
       .min(1, "Please confirm your password"),
+
+    otp_type: z.string().optional(),
   })
   .refine((data) => data.password === data.password_confirmation, {
     message: "Passwords do not match",

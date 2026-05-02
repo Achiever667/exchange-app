@@ -49,6 +49,7 @@ export interface RegisterPayload {
   dial_code: string;
   country: string;
   password_confirmation: string;
+  otp_type: string;
 }
 
 export interface OTPVerificationPayload {

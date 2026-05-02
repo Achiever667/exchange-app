@@ -3,6 +3,7 @@
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useRegister } from '../hooks/useAuth';
 import {
   UiField,
@@ -16,15 +17,8 @@ import { useToast } from '@/components/ui/toast';
 import { Mail, Lock, Person, Phone, Language } from '@mui/icons-material';
 import { registerSchema, RegisterCredentials } from '../schemas/registerSchema';
 
-interface RegistrationFormProps {
-  onSuccess?: () => void;
-  onVerificationRequired?: (email: string) => void;
-}
-
-export function RegistrationForm({
-  onSuccess,
-  onVerificationRequired,
-}: RegistrationFormProps) {
+export function RegistrationForm() {
+  const router = useRouter();
   const registerMutation = useRegister();
   const { addToast } = useToast();
 
@@ -41,13 +35,16 @@ export function RegistrationForm({
   
   const onsubmit = async (data: RegisterCredentials) => {
     try {
-      await registerMutation.mutateAsync(data);
+      const payload = {
+        ...data,
+        otp_type: 'registration',
+      };
+      await registerMutation.mutateAsync(payload);
       addToast({
         type: 'success',
         message: 'Registration successful! Please verify your email.',
       });
-      onVerificationRequired?.(data.email);
-      onSuccess?.();
+      router.push('/auth/verify');
     } catch (error: any) {
       const message = error.message || 'Registration failed';
       addToast({ type: 'error', message });
