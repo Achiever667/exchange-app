@@ -18,7 +18,7 @@ import { Lock, ArrowBack, CheckCircle } from "@mui/icons-material";
 
 import {
   resetPasswordFormSchema,
-  ResetPasswordFormValues,
+  ResetPasswordCredentials,
 } from "../schemas/resetPasswordSchema";
 
 interface ResetPasswordFormProps {
@@ -41,12 +41,11 @@ export function ResetPasswordForm({
   const resetPasswordMutation = useResetPassword();
   const { addToast } = useToast();
 
-  // ✅ ONLY password fields here (NO OTP)
   const {
     control,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<ResetPasswordFormValues>({
+  } = useForm<ResetPasswordCredentials>({
     resolver: zodResolver(resetPasswordFormSchema),
     defaultValues: {
       email,
@@ -56,7 +55,6 @@ export function ResetPasswordForm({
     mode: "onChange",
   });
 
-  // 🔐 STEP 1: VERIFY OTP
   const handleVerifyOtp = async () => {
     if (otp.length !== 6) {
       addToast({ type: "error", message: "Enter 6-digit OTP" });
@@ -74,12 +72,11 @@ export function ResetPasswordForm({
     }
   };
 
-  // 🔐 STEP 2: RESET PASSWORD
-  const onSubmit = async (data: ResetPasswordFormValues) => {
+  const onSubmit = async (data: ResetPasswordCredentials) => {
     try {
       await resetPasswordMutation.mutateAsync({
         ...data,
-        otp, // ✅ attach OTP manually
+        otp, 
       });
 
       setStep("success");
@@ -98,7 +95,6 @@ export function ResetPasswordForm({
     }
   };
 
-  // ✅ SUCCESS SCREEN
   if (step === "success") {
     return (
       <div className="w-full max-w-md space-y-6 text-center">
@@ -115,7 +111,6 @@ export function ResetPasswordForm({
     );
   }
 
-  // ✅ STEP 2 UI
   if (step === "reset") {
     return (
       <div className="w-full max-w-md space-y-6">

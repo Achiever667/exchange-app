@@ -33,4 +33,4 @@ export const resetPasswordFormSchema = z
     path: ["newPasswordConfirmation"],
   });
 
-export type ResetPasswordFormValues = z.infer<typeof resetPasswordFormSchema>;
+export type ResetPasswordCredentials = z.infer<typeof resetPasswordFormSchema>;
