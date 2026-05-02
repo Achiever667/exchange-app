@@ -73,7 +73,6 @@ export function ResetPasswordForm({ email, onBack, onSuccess }: ResetPasswordFor
     }
   };
 
-  // Success Step
   if (step === "success") {
     return (
       <div className="w-full max-w-md space-y-6 text-center">
@@ -91,7 +90,6 @@ export function ResetPasswordForm({ email, onBack, onSuccess }: ResetPasswordFor
     );
   }
 
-  // Reset Password Step
   if (step === "reset") {
     return (
       <div className="w-full max-w-md space-y-6">
