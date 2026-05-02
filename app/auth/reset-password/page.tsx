@@ -16,7 +16,6 @@ export default function ResetPasswordPage() {
     if (emailParam) {
       setEmail(emailParam);
     } else {
-      // Redirect to forgot-password if no email provided
       router.push("/auth/forgot-password");
     }
   }, [searchParams, router]);
