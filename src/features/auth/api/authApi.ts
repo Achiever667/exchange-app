@@ -107,7 +107,6 @@ async refreshToken(refreshToken: string): Promise<{ accessToken: string; refresh
     return response.data!;
   }
 
-  // Password Reset Methods
 
   async requestPasswordOtp(payload: PasswordResetRequestPayload): Promise<PasswordResetResponse> {
     try {
@@ -148,7 +147,6 @@ async refreshToken(refreshToken: string): Promise<{ accessToken: string; refresh
     }
   }
 
-  // Profile Methods
 
   async uploadProfilePicture(payload: UploadPicturePayload): Promise<UploadPictureResponse> {
     try {

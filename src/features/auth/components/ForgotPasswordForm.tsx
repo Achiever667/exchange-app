@@ -33,9 +33,9 @@ const onSubmit = async (data: ForgotPasswordCredentials) => {
     try {
       await requestOtpMutation.mutateAsync(data);
       
-      // Store OTP type in localStorage for resend OTP
       if (typeof window !== 'undefined') {
         localStorage.setItem(STORAGE_KEYS.OTP_TYPE, OTP_TYPES.PASSWORD_RESET);
+        localStorage.setItem(STORAGE_KEYS.OTP_EMAIL, data.email);
       }
       
       addToast({

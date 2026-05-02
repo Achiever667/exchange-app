@@ -46,6 +46,7 @@ export const STORAGE_KEYS = {
   ACCESS_TOKEN: 'access_token',
   REFRESH_TOKEN: 'refresh_token',
   USER_DATA: 'user_data',
+  OTP_EMAIL: 'otp_email',
   AUTH_STATE: 'auth_state',
   OTP_TYPE: 'otp_type',
 } as const;

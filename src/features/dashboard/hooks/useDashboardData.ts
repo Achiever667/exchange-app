@@ -101,18 +101,17 @@ export function useDashboardData(): DashboardData {
   const { data, isLoading, error } = useQuery<DashboardData>({
     queryKey: ["dashboard", "data"],
     queryFn: async () => {
-      // Simulate API call delay
       await new Promise((resolve) => setTimeout(resolve, 500));
       
       return {
-        totalBalance: 26200.0, // Sum of all wallet balances
+        totalBalance: 26200.0,
         wallets: mockWallets,
         recentTransactions: mockTransactions,
         isLoading: false,
         error: null,
       };
     },
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000, 
   });
 
   return {
