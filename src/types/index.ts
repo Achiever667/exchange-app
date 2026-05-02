@@ -55,6 +55,12 @@ export interface RegisterPayload {
 export interface OTPVerificationPayload {
   email: string;
   otp: string;
+  otp_type?: string;
+}
+
+export interface ResendOtpPayload {
+  email: string;
+  otp_type?: string;
 }
 
 export interface AuthTokens {

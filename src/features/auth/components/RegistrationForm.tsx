@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/field';
 import { UiButton } from '@/components/ui/button/UiButton';
 import { useToast } from '@/components/ui/toast';
+import { STORAGE_KEYS, OTP_TYPES } from '@/constants';
 
 import { Mail, Lock, Person, Phone, Language } from '@mui/icons-material';
 import { registerSchema, RegisterCredentials } from '../schemas/registerSchema';
@@ -33,13 +34,19 @@ export function RegistrationForm() {
   });
 
   
-  const onsubmit = async (data: RegisterCredentials) => {
+const onsubmit = async (data: RegisterCredentials) => {
     try {
       const payload = {
         ...data,
-        otp_type: 'registration',
+        otp_type: OTP_TYPES.REGISTRATION,
       };
       await registerMutation.mutateAsync(payload);
+      
+      // Store OTP type in localStorage for resend OTP
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(STORAGE_KEYS.OTP_TYPE, OTP_TYPES.REGISTRATION);
+      }
+      
       addToast({
         type: 'success',
         message: 'Registration successful! Please verify your email.',

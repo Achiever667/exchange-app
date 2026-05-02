@@ -30,10 +30,9 @@ export default function DashboardPage() {
   }, [hydrate]);
 
   useEffect(() => {
-    // Simple check - if not authenticated after hydrating, redirect
     const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
     if (!isAuthenticated && !token) {
-      router.push('/dashboard');
+      router.push('/auth/login');
     }
   }, [isAuthenticated, router]);
 
@@ -53,14 +52,11 @@ export default function DashboardPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Row 1: Total Balance + Wallet Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Total Balance - spans 1 column */}
           <div className="lg:col-span-1">
             <TotalBalanceCard balance={totalBalance} />
           </div>
           
-          {/* Wallet Cards - spans 3 columns */}
           <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-4">
             {wallets.map((wallet) => (
               <WalletCard key={wallet.id} wallet={wallet} />
@@ -68,7 +64,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Row 2: Exchange + Quick Actions */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
             <ExchangeCard />
@@ -78,7 +73,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Row 3: Recent Transactions + Market Watch */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
             <RecentTransactionsCard transactions={recentTransactions} />
@@ -88,7 +82,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Utility Bills Card - Optional Row */}
         <div className="grid grid-cols-1 gap-6">
           <div className="bg-white rounded-xl p-6 border border-gray-200">
             <div className="flex items-center justify-between">

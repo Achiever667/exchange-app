@@ -14,6 +14,7 @@ import {
   SetPinResponse,
   UploadPicturePayload,
   UploadPictureResponse,
+  ResendOtpPayload,
 } from '@/types';
 import {
   AUTH_ENDPOINTS,
@@ -55,11 +56,9 @@ class AuthApiService {
   }
 
  
-  async resendOtp(email: string): Promise<OTPResponse> {
+async resendOtp(payload: ResendOtpPayload): Promise<OTPResponse> {
     try {
-      const response = await apiClient.post<OTPResponse>(AUTH_ENDPOINTS.RESEND_OTP, {
-        email,
-      });
+      const response = await apiClient.post<OTPResponse>(AUTH_ENDPOINTS.RESEND_OTP, payload);
       return response.data!;
     } catch (error) {
       console.error('OTP resend failed:', error);

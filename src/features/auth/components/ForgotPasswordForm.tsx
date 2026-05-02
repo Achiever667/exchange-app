@@ -7,6 +7,7 @@ import { useRequestPasswordOtp } from "../hooks/useAuth";
 import { UiField, UiFieldError } from "@/components/ui/field";
 import { UiButton } from "@/components/ui/button/UiButton";
 import { useToast } from "@/components/ui/toast";
+import { STORAGE_KEYS, OTP_TYPES } from "@/constants";
 
 import { Mail, ArrowBack } from "@mui/icons-material";
 import { forgotPasswordSchema, ForgotPasswordCredentials } from "../schemas/forgotPasswordSchema";
@@ -28,9 +29,15 @@ export function ForgotPasswordForm({ onSuccess }: ForgotPasswordFormProps) {
     mode: "onChange",
   });
 
-  const onSubmit = async (data: ForgotPasswordCredentials) => {
+const onSubmit = async (data: ForgotPasswordCredentials) => {
     try {
       await requestOtpMutation.mutateAsync(data);
+      
+      // Store OTP type in localStorage for resend OTP
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(STORAGE_KEYS.OTP_TYPE, OTP_TYPES.PASSWORD_RESET);
+      }
+      
       addToast({
         type: "success",
         message: "OTP sent to your email. Please check your inbox.",

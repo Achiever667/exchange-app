@@ -17,6 +17,7 @@ import {
   SetPinResponse,
   UploadPicturePayload,
   UploadPictureResponse,
+  ResendOtpPayload,
 } from '@/types';
 import { QUERY_KEYS } from '@/constants';
 
@@ -70,8 +71,8 @@ export function useVerifyOtp() {
 
 
 export function useResendOtp() {
-  return useMutation<OTPResponse, ApiError, string>({
-    mutationFn: async (email: string) => authApiService.resendOtp(email),
+  return useMutation<OTPResponse, ApiError, ResendOtpPayload>({
+    mutationFn: async (payload: ResendOtpPayload) => authApiService.resendOtp(payload),
   });
 }
 

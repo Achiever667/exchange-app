@@ -9,6 +9,7 @@ import { UiPinInput } from "@/components/ui/pin-input/UiPinInput";
 import { UiButton } from "@/components/ui/button/UiButton";
 import { UiFieldError } from "@/components/ui/field";
 import { useToast } from "@/components/ui/toast";
+import { STORAGE_KEYS, OTP_TYPES } from "@/constants";
 import { EmailOutlined, LogoutOutlined, RefreshOutlined } from "@mui/icons-material";
 import { maskEmail } from "@/lib/utils";
 
@@ -42,10 +43,17 @@ export function OtpVerificationForm({ onSuccess }: OtpVerificationFormProps) {
     return () => clearTimeout(timer);
 }, [timeRemaining]);
 
-  const handleResendOtp = async () => {
+const handleResendOtp = async () => {
     if (!email || isResending) return;
     try {
-      await resendMutation.mutateAsync(email);
+      let otpType = OTP_TYPES.REGISTRATION;
+      if (typeof window !== 'undefined') {
+        const storedOtpType = localStorage.getItem(STORAGE_KEYS.OTP_TYPE);
+        if (storedOtpType) {
+          otpType = storedOtpType;
+        }
+      }
+      await resendMutation.mutateAsync({ email, otp_type: otpType });
       setTimeRemaining(RESEND_OTP_TIMEOUT);
       setError(null);
       addToast({ type: "success", message: "OTP sent successfully!" });

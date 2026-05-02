@@ -47,7 +47,14 @@ export const STORAGE_KEYS = {
   REFRESH_TOKEN: 'refresh_token',
   USER_DATA: 'user_data',
   AUTH_STATE: 'auth_state',
+  OTP_TYPE: 'otp_type',
 } as const;
+
+export const OTP_TYPES = {
+  REGISTRATION: 'registration',
+  PASSWORD_RESET: 'password_reset',
+  LOGIN: 'login',
+}
 
 export const QUERY_KEYS = {
   AUTH: {
