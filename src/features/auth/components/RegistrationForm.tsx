@@ -42,9 +42,9 @@ const onsubmit = async (data: RegisterCredentials) => {
       };
       await registerMutation.mutateAsync(payload);
       
-      // Store OTP type in localStorage for resend OTP
       if (typeof window !== 'undefined') {
         localStorage.setItem(STORAGE_KEYS.OTP_TYPE, OTP_TYPES.REGISTRATION);
+        localStorage.setItem(STORAGE_KEYS.OTP_EMAIL, data.email);
       }
       
       addToast({
