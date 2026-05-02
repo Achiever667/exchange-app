@@ -93,12 +93,6 @@ export function ResetPasswordForm({ email, onBack, onSuccess }: ResetPasswordFor
   if (step === "reset") {
     return (
       <div className="w-full max-w-md space-y-6">
-        <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">New Password</h2>
-          <p className="text-sm text-gray-600 mt-1">
-            Enter your new password below
-          </p>
-        </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Controller

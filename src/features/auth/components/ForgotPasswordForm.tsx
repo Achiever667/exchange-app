@@ -51,12 +51,12 @@ const onSubmit = async (data: ForgotPasswordCredentials) => {
 
   return (
     <div className="w-full max-w-md space-y-6">
-      <div className="text-center mb-6">
+      {/* <div className="text-center mb-6">
         <h2 className="text-2xl font-bold text-gray-900">Forgot Password?</h2>
         <p className="text-sm text-gray-600 mt-1">
           Enter your email to receive a verification code
         </p>
-      </div>
+      </div> */}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <Controller

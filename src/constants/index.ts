@@ -16,7 +16,7 @@ export const AUTH_ENDPOINTS = {
   GET_PROFILE: '/auth/profile',
   UPDATE_PROFILE: '/auth/profile/update',
   // Password Reset
-  REQUEST_PASSWORD_OTP: '/auth/password/otp/request',
+  REQUEST_PASSWORD_OTP: '/auth/password/otp',
   VERIFY_PASSWORD_OTP: '/auth/password/otp/verify',
   RESET_PASSWORD: '/auth/password/reset',
   // Profile
