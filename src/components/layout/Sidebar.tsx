@@ -1,0 +1,103 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
+
+interface NavItem {
+  label: string;
+  href: string;
+  icon: string;
+}
+
+const navigation: NavItem[] = [
+  { label: "Dashboard", href: "/dashboard", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
+  { label: "Wallet", href: "/dashboard/wallet", icon: "M3 10h18M7 15h1m4 0h1m-7 11h1m4 0h1M5 6h14a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z" },
+  { label: "Exchange", href: "/dashboard/exchange", icon: "M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4 4" },
+  { label: "Transactions", href: "/dashboard/transactions", icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" },
+  { label: "Settings", href: "/dashboard/settings", icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" },
+];
+
+interface SidebarProps {
+  collapsed?: boolean;
+}
+
+export function Sidebar({ collapsed = false }: SidebarProps) {
+  const pathname = usePathname();
+  const [isCollapsed, setIsCollapsed] = useState(collapsed);
+
+  return (
+    <aside
+      className={`fixed left-0 top-0 h-screen bg-white border-r border-gray-200 transition-all duration-300 z-50 ${
+        isCollapsed ? "w-16" : "w-64"
+      }`}
+    >
+      {/* Logo */}
+      <div className="h-16 flex items-center justify-center border-b border-gray-200">
+        <Link href="/dashboard" className="flex items-center space-x-2">
+          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+            <span className="text-white font-bold text-lg">E</span>
+          </div>
+          {!isCollapsed && (
+            <span className="text-xl font-bold text-gray-900">Exchange</span>
+          )}
+        </Link>
+      </div>
+
+      {/* Navigation */}
+      <nav className="p-4 space-y-2">
+        {navigation.map((item) => {
+          const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-colors ${
+                isActive
+                  ? "bg-blue-50 text-blue-600"
+                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+              }`}
+              title={isCollapsed ? item.label : undefined}
+            >
+              <svg
+                className="w-5 h-5 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d={item.icon}
+                />
+              </svg>
+              {!isCollapsed && (
+                <span className="font-medium">{item.label}</span>
+              )}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* Bottom Section - User Profile */}
+      <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
+        <button
+          className={`flex items-center space-x-3 w-full px-3 py-2.5 rounded-lg hover:bg-gray-50 transition-colors ${
+            isCollapsed ? "justify-center" : ""
+          }`}
+        >
+          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+            <span className="text-gray-600 font-medium text-sm">JD</span>
+          </div>
+          {!isCollapsed && (
+            <div className="text-left">
+              <p className="text-sm font-medium text-gray-900">John Doe</p>
+              <p className="text-xs text-gray-500">View profile</p>
+            </div>
+          )}
+        </button>
+      </div>
+    </aside>
+  );
+}
