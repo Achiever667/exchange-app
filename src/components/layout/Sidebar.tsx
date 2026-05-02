@@ -44,7 +44,6 @@ export function Sidebar({ collapsed = false }: SidebarProps) {
         </Link>
       </div>
 
-      {/* Navigation */}
       <nav className="p-4 space-y-2">
         {navigation.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
@@ -80,7 +79,6 @@ export function Sidebar({ collapsed = false }: SidebarProps) {
         })}
       </nav>
 
-      {/* Bottom Section - User Profile */}
       <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
         <button
           className={`flex items-center space-x-3 w-full px-3 py-2.5 rounded-lg hover:bg-gray-50 transition-colors ${
