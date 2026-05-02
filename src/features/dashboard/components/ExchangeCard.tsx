@@ -41,7 +41,6 @@ export function ExchangeCard({ onExchange }: ExchangeCardProps) {
       <h3 className="font-semibold text-gray-900 mb-4">Exchange</h3>
       
       <div className="space-y-4">
-        {/* From - Amount */}
         <UiField
           label="From"
           type="number"
@@ -50,7 +49,6 @@ export function ExchangeCard({ onExchange }: ExchangeCardProps) {
           onChange={(val) => setAmount(val)}
         />
 
-        {/* From Currency Select */}
         <UiSelect
           label="Currency"
           value={fromCurrency}
@@ -58,7 +56,6 @@ export function ExchangeCard({ onExchange }: ExchangeCardProps) {
           onChange={(val) => setFromCurrency(val as string)}
         />
 
-        {/* Swap Button */}
         <div className="flex justify-center">
           <button
             onClick={handleSwap}
@@ -71,7 +68,6 @@ export function ExchangeCard({ onExchange }: ExchangeCardProps) {
           </button>
         </div>
 
-        {/* To - Amount (Read Only) */}
         <UiField
           label="To"
           type="text"
@@ -80,7 +76,6 @@ export function ExchangeCard({ onExchange }: ExchangeCardProps) {
           disabled
         />
 
-        {/* To Currency Select */}
         <UiSelect
           label="Currency"
           value={toCurrency}
@@ -88,7 +83,6 @@ export function ExchangeCard({ onExchange }: ExchangeCardProps) {
           onChange={(val) => setToCurrency(val as string)}
         />
 
-        {/* Exchange Button */}
         <UiButton
           fullWidth
           onClick={handleExchange}
