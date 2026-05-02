@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { CurrencyCode } from "@/types";
 import { UiField } from "@/components/ui/field";
-import { UiSelect } from "@/components/ui/select";
-import { UiButton } from "@/components/ui/button";
+import { UiSelect } from "@/components/ui/select/UiSelectInput";
+import { UiButton } from "@/components/ui/button/UiButton";
 
 interface ExchangeCardProps {
   onExchange?: (from: CurrencyCode, to: CurrencyCode, amount: number) => void;
