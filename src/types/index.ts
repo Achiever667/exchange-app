@@ -170,3 +170,41 @@ export interface RequestConfig {
   timeout?: number;
   headers?: Record<string, string>;
 }
+
+// Password Reset Types
+export interface PasswordResetRequestPayload {
+  email: string;
+}
+
+export interface PasswordResetVerifyPayload {
+  email: string;
+  otp: string;
+}
+
+export interface PasswordResetCompletePayload {
+  email: string;
+  otp: string;
+  newPassword: string;
+  newPasswordConfirmation: string;
+}
+
+export interface SetPinPayload {
+  pin: string;
+}
+
+export interface UploadPicturePayload {
+  file: File;
+}
+
+export interface PasswordResetResponse {
+  message: string;
+  expiresIn: number;
+}
+
+export interface SetPinResponse {
+  message: string;
+}
+
+export interface UploadPictureResponse {
+  avatar: string;
+}

@@ -9,6 +9,14 @@ import {
   User,
   OTPResponse,
   ApiError,
+  PasswordResetRequestPayload,
+  PasswordResetVerifyPayload,
+  PasswordResetCompletePayload,
+  PasswordResetResponse,
+  SetPinPayload,
+  SetPinResponse,
+  UploadPicturePayload,
+  UploadPictureResponse,
 } from '@/types';
 import { QUERY_KEYS } from '@/constants';
 
@@ -119,4 +127,47 @@ export function useAuth() {
 
 export function useIsAuthenticated() {
   return useAuthStore((state) => state.isAuthenticated);
+}
+
+// Password Reset Hooks
+
+export function useRequestPasswordOtp() {
+  return useMutation<PasswordResetResponse, ApiError, PasswordResetRequestPayload>({
+    mutationFn: async (payload: PasswordResetRequestPayload) => authApiService.requestPasswordOtp(payload),
+  });
+}
+
+
+export function useVerifyPasswordOtp() {
+  return useMutation<PasswordResetResponse, ApiError, PasswordResetVerifyPayload>({
+    mutationFn: async (payload: PasswordResetVerifyPayload) => authApiService.verifyPasswordOtp(payload),
+  });
+}
+
+
+export function useResetPassword() {
+  return useMutation<PasswordResetResponse, ApiError, PasswordResetCompletePayload>({
+    mutationFn: async (payload: PasswordResetCompletePayload) => authApiService.resetPassword(payload),
+  });
+}
+
+
+// Profile Hooks
+
+export function useUploadProfilePicture() {
+  const queryClient = useQueryClient();
+
+  return useMutation<UploadPictureResponse, ApiError, UploadPicturePayload>({
+    mutationFn: async (payload: UploadPicturePayload) => authApiService.uploadProfilePicture(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AUTH.PROFILE });
+    },
+  });
+}
+
+
+export function useSetPin() {
+  return useMutation<SetPinResponse, ApiError, SetPinPayload>({
+    mutationFn: async (payload: SetPinPayload) => authApiService.setPin(payload),
+  });
 }

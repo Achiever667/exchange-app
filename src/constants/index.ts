@@ -15,6 +15,13 @@ export const AUTH_ENDPOINTS = {
   LOGOUT: '/auth/logout',
   GET_PROFILE: '/auth/profile',
   UPDATE_PROFILE: '/auth/profile/update',
+  // Password Reset
+  REQUEST_PASSWORD_OTP: '/auth/password/otp/request',
+  VERIFY_PASSWORD_OTP: '/auth/password/otp/verify',
+  RESET_PASSWORD: '/auth/password/reset',
+  // Profile
+  UPLOAD_PROFILE_PICTURE: '/auth/profile/picture',
+  SET_PIN: '/auth/profile/pin',
 } as const;
 
 export const WALLET_ENDPOINTS = {
