@@ -1,19 +1,18 @@
 import { z } from "zod";
 import { DEFAULT_PASSWORD_RULES } from "@/components/ui/field";
 
-export const resetPasswordSchema = z
+export const verifyOtpSchema = z.object({
+  email: z.string().email(),
+  otp: z.string().length(6, "OTP must be 6 digits"),
+});
+
+export const resetPasswordFormSchema = z
   .object({
     email: z
       .string()
       .trim()
       .min(1, "Email is required")
       .email("Please enter a valid email"),
-
-    otp: z
-      .string()
-      .trim()
-      .min(1, "OTP is required")
-      .length(6, "OTP must be 6 digits"),
 
     newPassword: z
       .string()
@@ -34,4 +33,4 @@ export const resetPasswordSchema = z
     path: ["newPasswordConfirmation"],
   });
 
-export type ResetPasswordCredentials = z.infer<typeof resetPasswordSchema>;
+export type ResetPasswordFormValues = z.infer<typeof resetPasswordFormSchema>;
