@@ -1,139 +1,108 @@
-/**
- * Wallet Dashboard Page
- * 
- * Example of composing multiple feature modules:
- * - Auth (verify user)
- * - Wallet (display wallets)
- * - Payment (initiate deposits)
- * 
- * Demonstrates:
- * - Clean separation of concerns
- * - Feature module composition
- * - Error handling
- * - Loading states
- */
+"use client";
 
-'use client';
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { DashboardLayout } from "@/components/layout/DashboardLayout";
+import { useAuthStore } from "@/features/auth/store";
+import { useDashboardData } from "@/features/dashboard";
+import { TotalBalanceCard } from "@/features/dashboard/components/TotalBalanceCard";
+import { WalletCard } from "@/features/dashboard/components/WalletCard";
+import { ExchangeCard } from "@/features/dashboard/components/ExchangeCard";
+import { QuickActions } from "@/features/dashboard/components/QuickActions";
+import { RecentTransactionsCard } from "@/features/dashboard/components/RecentTransactionsCard";
+import { MarketWatchCard } from "@/features/dashboard/components/MarketWatchCard";
+import { UiButton } from "@/components/ui/button/UiButton";
 
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/features/auth/hooks/useAuth';
-import { useWallets, useTransferFunds } from '@/features/wallet';
-import { useInitiatePayment, usePaymentStatus } from '@/features/payment';
-import { WalletList } from '@/features/wallet/components/WalletList';
-import { PaymentInitiationForm } from '@/features/payment/components/PaymentInitiation';
-import { UiButton } from '@/components/ui/button/UiButton';
-import { useAuthStore } from '@/features/auth/store';
-
-/**
- * Wallet Dashboard Page Component
- * Protected route that requires authentication
- */
-export default function WalletDashboard() {
+export default function DashboardPage() {
+  const router = useRouter();
   const hydrate = useAuthStore((state) => state.hydrate);
-  const { isAuthenticated } = useAuth();
-  const [selectedWalletId, setSelectedWalletId] = useState<string | null>(null);
-  const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  
+  const { 
+    totalBalance, 
+    wallets, 
+    recentTransactions, 
+    isLoading 
+  } = useDashboardData();
 
   useEffect(() => {
     hydrate();
   }, [hydrate]);
 
-  // If not authenticated, show message
-  if (!isAuthenticated) {
+  useEffect(() => {
+    // Simple check - if not authenticated after hydrating, redirect
+    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+    if (!isAuthenticated && !token) {
+      router.push('/dashboard');
+    }
+  }, [isAuthenticated, router]);
+
+  if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
-          <p className="text-gray-600">Please log in to access your wallets.</p>
-          <UiButton className="mt-4" onClick={() => window.location.href = '/'}>
-            Go to Login
-          </UiButton>
+      <DashboardLayout>
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading dashboard...</p>
+          </div>
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">Wallet Management</h1>
+    <DashboardLayout>
+      <div className="space-y-6">
+        {/* Row 1: Total Balance + Wallet Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Total Balance - spans 1 column */}
+          <div className="lg:col-span-1">
+            <TotalBalanceCard balance={totalBalance} />
+          </div>
+          
+          {/* Wallet Cards - spans 3 columns */}
+          <div className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {wallets.map((wallet) => (
+              <WalletCard key={wallet.id} wallet={wallet} />
+            ))}
+          </div>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left: Wallet List */}
+        {/* Row 2: Exchange + Quick Actions */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-6">My Wallets</h2>
-              <WalletList
-                onWalletSelect={setSelectedWalletId}
-              />
-            </div>
+            <ExchangeCard />
           </div>
+          <div className="lg:col-span-1">
+            <QuickActions onAction={(action) => console.log('Action:', action)} />
+          </div>
+        </div>
 
-          {/* Right: Actions */}
-          <div className="space-y-6">
-            {/* Deposit Card */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-              <div className="space-y-3">
-                <UiButton
-                  fullWidth
-                  variant="primary"
-                  onClick={() => setShowPaymentForm(!showPaymentForm)}
-                  disabled={!selectedWalletId}
-                >
-                  Deposit Funds
-                </UiButton>
-                <UiButton
-                  fullWidth
-                  variant="secondary"
-                  disabled={!selectedWalletId}
-                >
-                  Transfer
-                </UiButton>
-                <UiButton
-                  fullWidth
-                  variant="secondary"
-                  disabled={!selectedWalletId}
-                >
-                  Withdraw
-                </UiButton>
+        {/* Row 3: Recent Transactions + Market Watch */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <RecentTransactionsCard transactions={recentTransactions} />
+          </div>
+          <div className="lg:col-span-1">
+            <MarketWatchCard />
+          </div>
+        </div>
+
+        {/* Utility Bills Card - Optional Row */}
+        <div className="grid grid-cols-1 gap-6">
+          <div className="bg-white rounded-xl p-6 border border-gray-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-gray-900">Utility Bills</h3>
+                <p className="text-sm text-gray-500 mt-1">Pay your bills anytime, anywhere</p>
               </div>
-              {!selectedWalletId && (
-                <p className="text-xs text-gray-500 mt-3">
-                  Select a wallet to enable actions
-                </p>
-              )}
-            </div>
-
-            {/* Payment Form */}
-            {showPaymentForm && selectedWalletId && (
-              <div className="bg-white rounded-lg shadow p-6">
-                <PaymentInitiationForm
-                  walletId={selectedWalletId}
-                  onSuccess={(paymentId) => {
-                    console.log('Payment initiated:', paymentId);
-                    setShowPaymentForm(false);
-                  }}
-                />
-              </div>
-            )}
-
-            {/* Info Card */}
-            <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-              <h4 className="font-semibold text-blue-900 mb-2">💡 Tip</h4>
-              <p className="text-sm text-blue-800">
-                Select a wallet from the list to enable deposit, transfer, and withdrawal actions.
-              </p>
+              <UiButton variant="secondary">
+                Pay Bills
+              </UiButton>
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }

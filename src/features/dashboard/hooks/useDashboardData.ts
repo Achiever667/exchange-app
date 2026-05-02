@@ -11,7 +11,6 @@ interface DashboardData {
   error: Error | null;
 }
 
-// Mock data for demo purposes
 const mockWallets: Wallet[] = [
   {
     id: "1",
