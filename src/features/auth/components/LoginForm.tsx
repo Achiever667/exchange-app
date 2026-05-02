@@ -91,16 +91,21 @@ export function LoginForm({
         <UiFieldError className="justify-center">{errors.root.message}</UiFieldError>
       )}
 
-      <UiButton type="submit" disabled={isLoading || !isValid} fullWidth>
+<UiButton type="submit" disabled={isLoading || !isValid} fullWidth>
         {isLoading ? "Logging in..." : "Login"}
       </UiButton>
 
-      <p className="text-center text-sm text-gray-600">
-        Don't have an account?{" "}
-        <Link href="/auth/register" className="text-blue-600 hover:underline font-medium">
-          Sign up
+      <div className="flex justify-between text-sm">
+        <p className="text-gray-600">
+          Don't have an account?{" "}
+          <Link href="/auth/register" className="text-blue-600 hover:underline font-medium">
+            Sign up
+          </Link>
+        </p>
+        <Link href="/auth/forgot-password" className="text-blue-600 hover:underline font-medium">
+          Forgot Password?
         </Link>
-      </p>
+      </div>
     </form>
   );
 }
