@@ -20,7 +20,7 @@ export function TotalBalanceCard({ balance, currency = "USD" }: TotalBalanceCard
           <p className="text-blue-100 text-sm font-medium">Total Balance</p>
           <h2 className="text-3xl font-bold mt-1">{formattedBalance}</h2>
         </div>
-        <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+        <div className="w-12 h-12 bg-white/20 rounded-full flex items-center shrink-0 justify-center">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"

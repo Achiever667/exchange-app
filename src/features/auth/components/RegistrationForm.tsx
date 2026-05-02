@@ -42,10 +42,8 @@ const onsubmit = async (data: RegisterCredentials) => {
       };
       await registerMutation.mutateAsync(payload);
       
-      if (typeof window !== 'undefined') {
         localStorage.setItem(STORAGE_KEYS.OTP_TYPE, OTP_TYPES.REGISTRATION);
         localStorage.setItem(STORAGE_KEYS.OTP_EMAIL, data.email);
-      }
       
       addToast({
         type: 'success',
