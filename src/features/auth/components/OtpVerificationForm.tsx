@@ -13,8 +13,7 @@ import { STORAGE_KEYS, OTP_TYPES } from "@/constants";
 import { EmailOutlined, LogoutOutlined, RefreshOutlined } from "@mui/icons-material";
 import { maskEmail } from "@/lib/utils";
 
-const RESEND_OTP_TIMEOUT = 60; // seconds
-
+const RESEND_OTP_TIMEOUT = 60; 
 interface OtpVerificationFormProps {
   onSuccess?: () => void;
 }
@@ -23,7 +22,7 @@ interface OtpVerificationFormProps {
 export function OtpVerificationForm({ onSuccess }: OtpVerificationFormProps) {
   const searchParams = useSearchParams();
 //   const email = searchParams.get("email") || "";
-  const email = 'emmanueloleh88@gmail.com' // For testing purposes, replace with actual email from search params in production
+  const email = localStorage.getItem(STORAGE_KEYS.OTP_EMAIL)
 
   const [otp, setOtp] = useState("");
   const [timeRemaining, setTimeRemaining] = useState(RESEND_OTP_TIMEOUT);
@@ -90,7 +89,7 @@ const handleResendOtp = async () => {
         <Box className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-100 rounded-full">
           <EmailOutlined className="text-blue-500" sx={{ fontSize: 18 }} />
           <Typography variant="body2" className="font-semibold text-blue-700 truncate max-w-[200px]">
-            {maskEmail(email)}
+            {maskEmail(email!)}
           </Typography>
         </Box>
       </Box>

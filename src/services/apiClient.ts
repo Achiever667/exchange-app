@@ -29,11 +29,8 @@ class ApiClient {
     this.setupInterceptors();
   }
 
-  /**
-   * Setup request and response interceptors
-   */
+
   private setupInterceptors(): void {
-    // Request Interceptor - Add JWT token to headers
     this.axiosInstance.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
         const token = this.getAccessToken();
@@ -47,16 +44,13 @@ class ApiClient {
       }
     );
 
-    // Response Interceptor - Handle token refresh and errors
     this.axiosInstance.interceptors.response.use(
       (response: AxiosResponse) => response,
       async (error: AxiosError) => {
         const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
-        // If 401 and not already retried, attempt token refresh
         if (error.response?.status === 401 && !originalRequest._retry) {
           if (this.isRefreshing) {
-            // Queue failed requests while token is being refreshed
             return new Promise((resolve, reject) => {
               this.failedQueue.push({
                 resolve: (token: string) => {

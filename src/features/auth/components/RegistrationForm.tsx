@@ -51,12 +51,15 @@ const onsubmit = async (data: RegisterCredentials) => {
       });
       router.push('/auth/verify');
     } catch (error: any) {
-      const message = error.message || 'Registration failed';
-      addToast({ type: 'error', message });
-      setError('root', {
-        message,
-      });
-    }
+  const message =
+    error instanceof Error
+      ? error.message
+      : typeof error === 'string'
+      ? error
+      : 'Registration failed';
+
+  addToast({ type: 'error', message });
+}
   };
 
   return (

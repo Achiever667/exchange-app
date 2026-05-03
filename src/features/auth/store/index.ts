@@ -29,11 +29,11 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   setUser: (user) =>
     set(() => {
-      if (user && typeof window !== 'undefined') {
-        localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(user));
-      } else if (!user && typeof window !== 'undefined') {
-        localStorage.removeItem(STORAGE_KEYS.USER_DATA);
-      }
+      // if (user && typeof window !== 'undefined') {
+      //   localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(user));
+      // } else if (!user && typeof window !== 'undefined') {
+      //   localStorage.removeItem(STORAGE_KEYS.USER_DATA);
+      // }
       return { user };
     }),
 

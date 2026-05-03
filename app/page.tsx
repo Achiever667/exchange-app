@@ -1,8 +1,3 @@
-/**
- * Root Page - Dashboard demonstrating the architecture
- * Shows auth, wallet, and payment features
- */
-
 'use client';
 
 import { useEffect } from 'react';
@@ -12,35 +7,22 @@ import { useWallets } from '@/features/wallet/hooks/useWallet';
 import { WalletList } from '@/features/wallet/components/WalletList';
 import { LoginForm } from '@/features/auth/components/LoginForm';
 import { UiButton } from '@/components/ui/button/UiButton';
+import { AuthLayout } from '@/components/layout/AuthLayout';
 
-/**
- * Dashboard Component - Main application page
- * Demonstrates:
- * - Auth state management
- * - Wallet feature integration
- * - Proper component composition
- */
 function DashboardContent() {
   const { user, isAuthenticated } = useAuth();
   const { data: wallets, isLoading: walletsLoading } = useWallets();
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="w-full max-w-md">
-          <div className="bg-white rounded-lg shadow p-6 space-y-6">
-            <div className="text-center">
-              <h1 className="text-2xl font-bold text-gray-900">Exchange App</h1>
-              <p className="text-gray-600 mt-2">Sign in to your account</p>
-            </div>
-            <LoginForm
-              onSuccess={() => {
-                console.log('Login successful');
-              }}
-            />
-          </div>
-        </div>
-      </div>
+      
+           <AuthLayout
+               title="Welcome back"
+               subtitle="Login to your account"
+             >
+               <LoginForm />
+             </AuthLayout>
+       
     );
   }
 
@@ -92,7 +74,6 @@ function DashboardContent() {
             </dl>
           </div>
 
-          {/* Quick Stats */}
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Stats</h2>
             <div className="space-y-4">
