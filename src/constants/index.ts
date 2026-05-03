@@ -143,27 +143,4 @@ export const TOKEN_EXPIRATION = {
   REFRESH_TOKEN: 604800,
 } as const;
 
-export function handleError(errorCode: string): string {
-  switch (errorCode) {
-    case ERROR_CODES.UNAUTHORIZED:
-      return 'Session expired. Please login again.';
-    case ERROR_CODES.FORBIDDEN:
-      return 'You do not have permission to perform this action.';
-    case ERROR_CODES.NOT_FOUND:
-      return 'Resource not found.';
-    case ERROR_CODES.VALIDATION_ERROR:
-      return 'Invalid input provided.';
-    case ERROR_CODES.INVALID_OTP:
-      return 'Invalid or expired OTP. Please request a new one.';
-    case ERROR_CODES.INSUFFICIENT_BALANCE:
-      return 'Insufficient balance for this operation.';
-    case ERROR_CODES.SERVER_ERROR:
-      return 'Server error. Please try again later.';
-    case ERROR_CODES.NETWORK_ERROR:
-      return 'Network error. Please check your connection.';
-    case ERROR_CODES.INVALID_PAYMENT_METHOD:
-      return 'Invalid payment method selected.';
-    default:
-      return 'An unexpected error occurred.';
-  }
-}
+
