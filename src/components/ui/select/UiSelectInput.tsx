@@ -1,14 +1,15 @@
 "use client";
 
 import * as React from "react";
+
 import {
   Box,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
-  SelectChangeEvent,
   TextField,
+  ListSubheader,
 } from "@mui/material";
 
 import { debounce } from "@/lib/utils";
@@ -46,7 +47,13 @@ export function UiSelect({
   onSearch,
 }: UiSelectProps) {
   const [search, setSearch] = React.useState("");
-  const [filteredOptions, setFilteredOptions] = React.useState(options);
+
+  const [filteredOptions, setFilteredOptions] =
+    React.useState<Option[]>(options);
+
+  React.useEffect(() => {
+    setFilteredOptions(options);
+  }, [options]);
 
   const debouncedSearch = React.useMemo(
     () =>
@@ -54,26 +61,36 @@ export function UiSelect({
         if (!onSearch) {
           setFilteredOptions(
             options.filter((opt) =>
-              opt.label.toLowerCase().includes(query.toLowerCase())
+              opt.label
+                .toLowerCase()
+                .includes(query.toLowerCase())
             )
           );
+
           return;
         }
 
         const result = await onSearch(query);
-        if (result) setFilteredOptions(result);
+
+        if (result) {
+          setFilteredOptions(result);
+        }
       }, 300),
     [options, onSearch]
   );
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const query = e.target.value;
+
     setSearch(query);
+
     debouncedSearch(query);
   };
 
   const handleChange = (event: any) => {
-    onChange(event.target.value as string | number);
+    onChange(event.target.value);
   };
 
   const sizeMap = {
@@ -101,29 +118,36 @@ export function UiSelect({
             height: sizeMap[size],
           }}
           MenuProps={{
-            sx: {
-              "& .MuiPaper-root": {
+            autoFocus: false,
+            PaperProps: {
+              sx: {
                 borderRadius: 2,
-                padding: searchable ? 1 : 0,
+                mt: 1,
               },
             },
           }}
         >
           {searchable && (
-            <Box component="div" sx={{ px: 1, pb: 1 }}>
+            <ListSubheader>
               <TextField
                 size="small"
+                autoFocus
                 fullWidth
                 placeholder="Search..."
                 value={search}
                 onChange={handleSearch}
-                autoFocus
+                onKeyDown={(e) => {
+                  e.stopPropagation();
+                }}
               />
-            </Box>
+            </ListSubheader>
           )}
 
           {filteredOptions.map((opt) => (
-            <MenuItem key={opt.value} value={opt.value}>
+            <MenuItem
+              key={opt.value}
+              value={opt.value}
+            >
               {opt.label}
             </MenuItem>
           ))}

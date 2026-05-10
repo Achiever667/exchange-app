@@ -39,9 +39,9 @@ export function CountrySelect({
         const response = await utilsApiService.getCountries();
 
         const formattedCountries = response.map((country) => ({
-          label: country.name,
-          value: country.code,
-        }));
+  label: country.name,
+  value: country.id,
+}));
 
         setCountries(formattedCountries);
       } catch (error) {

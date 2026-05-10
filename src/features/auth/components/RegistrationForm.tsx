@@ -1,26 +1,45 @@
-'use client';
+"use client";
 
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useRegister } from '../hooks/useAuth';
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+import { useRegister } from "../hooks/useAuth";
+
 import {
   UiField,
   UiFieldError,
   UiFieldGroup,
   DEFAULT_PASSWORD_RULES,
-} from '@/components/ui/field';
-import { UiButton } from '@/components/ui/button/UiButton';
-import { useToast } from '@/components/ui/toast';
-import { STORAGE_KEYS, OTP_TYPES } from '@/constants';
+} from "@/components/ui/field";
 
-import { Mail, Lock, Person, Phone, Language } from '@mui/icons-material';
-import { registerSchema, RegisterCredentials } from '../schemas/registerSchema';
+import { UiButton } from "@/components/ui/button/UiButton";
+import { useToast } from "@/components/ui/toast";
+
+import { STORAGE_KEYS, OTP_TYPES } from "@/constants";
+
+import { CountrySelect } from "@/components/common/CountrySelect";
+
+import {
+  Mail,
+  Lock,
+  Person,
+  Phone,
+  Language,
+} from "@mui/icons-material";
+
+import {
+  registerSchema,
+  RegisterCredentials,
+} from "../schemas/registerSchema";
+import { Typography } from "@mui/material";
 
 export function RegistrationForm() {
   const router = useRouter();
+
   const registerMutation = useRegister();
+
   const { addToast } = useToast();
 
   const {
@@ -30,30 +49,57 @@ export function RegistrationForm() {
     setError,
   } = useForm<RegisterCredentials>({
     resolver: zodResolver(registerSchema),
-    mode: 'onChange',
+    mode: "onChange",
+
+    defaultValues: {
+      firstname: "",
+      lastname: "",
+      username: "",
+      email: "",
+      phone_number: "",
+      dial_code: "",
+      country_id: "",
+      password: "",
+      password_confirmation: "",
+    },
   });
 
-  
-const onsubmit = async (data: RegisterCredentials) => {
+  const onsubmit = async (data: RegisterCredentials) => {
     try {
       const payload = {
         ...data,
         otp_type: OTP_TYPES.REGISTRATION,
       };
+
       await registerMutation.mutateAsync(payload);
-      
-        localStorage.setItem(STORAGE_KEYS.OTP_TYPE, OTP_TYPES.REGISTRATION);
-        localStorage.setItem(STORAGE_KEYS.OTP_EMAIL, data.email);
-      
+
+      localStorage.setItem(
+        STORAGE_KEYS.OTP_TYPE,
+        OTP_TYPES.REGISTRATION
+      );
+
+      localStorage.setItem(
+        STORAGE_KEYS.OTP_EMAIL,
+        data.email
+      );
+
       addToast({
-        type: 'success',
-        message: 'Registration successful! Please verify your email.',
+        type: "success",
+        message:
+          "Registration successful! Please verify your email.",
       });
-      router.push('/auth/verify');
+
+      router.push("/auth/verify");
     } catch (error: any) {
-      const message = error.message || 'Registration failed';
-      addToast({ type: 'error', message });
-      setError('root', {
+      const message =
+        error?.message || "Registration failed";
+
+      addToast({
+        type: "error",
+        message,
+      });
+
+      setError("root", {
         message,
       });
     }
@@ -77,7 +123,7 @@ const onsubmit = async (data: RegisterCredentials) => {
                 {...field}
                 label="First Name"
                 placeholder="John"
-                disabled={isSubmitting }
+                disabled={isSubmitting}
                 error={!!errors.firstname}
                 errorMessage={errors.firstname?.message}
                 startIcon={<Person sx={{ fontSize: 20 }} />}
@@ -93,7 +139,7 @@ const onsubmit = async (data: RegisterCredentials) => {
                 {...field}
                 label="Last Name"
                 placeholder="Doe"
-                disabled={isSubmitting }
+                disabled={isSubmitting}
                 error={!!errors.lastname}
                 errorMessage={errors.lastname?.message}
                 startIcon={<Person sx={{ fontSize: 20 }} />}
@@ -102,7 +148,7 @@ const onsubmit = async (data: RegisterCredentials) => {
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-1 gap-4 mt-4">
+        <div className="grid grid-cols-1 gap-4 mt-4">
           <Controller
             name="username"
             control={control}
@@ -111,7 +157,7 @@ const onsubmit = async (data: RegisterCredentials) => {
                 {...field}
                 label="Username"
                 placeholder="johndoe"
-                disabled={isSubmitting }
+                disabled={isSubmitting}
                 error={!!errors.username}
                 errorMessage={errors.username?.message}
                 startIcon={<Person sx={{ fontSize: 20 }} />}
@@ -132,7 +178,7 @@ const onsubmit = async (data: RegisterCredentials) => {
                 label="Email"
                 placeholder="you@example.com"
                 type="email"
-                disabled={isSubmitting }
+                disabled={isSubmitting}
                 error={!!errors.email}
                 errorMessage={errors.email?.message}
                 startIcon={<Mail sx={{ fontSize: 20 }} />}
@@ -149,7 +195,7 @@ const onsubmit = async (data: RegisterCredentials) => {
                 label="Phone Number"
                 placeholder="08059811404"
                 type="number"
-                disabled={isSubmitting }
+                disabled={isSubmitting}
                 error={!!errors.phone_number}
                 errorMessage={errors.phone_number?.message}
                 startIcon={<Phone sx={{ fontSize: 20 }} />}
@@ -167,34 +213,42 @@ const onsubmit = async (data: RegisterCredentials) => {
                 {...field}
                 label="Dial Code"
                 placeholder="+234"
-                disabled={isSubmitting }
+                disabled={isSubmitting}
                 error={!!errors.dial_code}
                 errorMessage={errors.dial_code?.message}
-startIcon={<Language sx={{ fontSize: 20 }} />}
+                startIcon={<Language sx={{ fontSize: 20 }} />}
               />
             )}
           />
 
           <Controller
-            name="country"
-            control={control}
-            render={({ field }) => (
-              <UiField
-                {...field}
-                label="Country"
-                placeholder="Nigeria"
-                disabled={isSubmitting }
-                error={!!errors.country}
-                errorMessage={errors.country?.message}
-                startIcon={<Language sx={{ fontSize: 20 }} />}
-              />
-            )}
-          />
+  name="country_id"
+  control={control}
+  render={({ field }) => (
+    <div className="space-y-1">
+      <Typography variant="body2" className="font-medium">
+        Country
+      </Typography>
+      <CountrySelect
+        value={field.value || ""}
+        onChange={field.onChange}
+        disabled={isSubmitting}
+        error={!!errors.country_id}
+      />
+
+      {errors.country_id?.message && (
+        <p className="text-sm text-red-500">
+          {errors.country_id.message}
+        </p>
+      )}
+    </div>
+  )}
+/>
         </div>
       </UiFieldGroup>
 
       <UiFieldGroup>
-        <div className="grid grid-cols-1 lg:grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           <Controller
             name="password"
             control={control}
@@ -223,10 +277,12 @@ startIcon={<Language sx={{ fontSize: 20 }} />}
                 label="Confirm Password"
                 placeholder="••••••••"
                 type="password"
-                disabled={isSubmitting }
+                disabled={isSubmitting}
                 showPasswordToggle
                 error={!!errors.password_confirmation}
-                errorMessage={errors.password_confirmation?.message}
+                errorMessage={
+                  errors.password_confirmation?.message
+                }
                 startIcon={<Lock sx={{ fontSize: 20 }} />}
               />
             )}
@@ -235,17 +291,23 @@ startIcon={<Language sx={{ fontSize: 20 }} />}
       </UiFieldGroup>
 
       {errors.root && (
-        <UiFieldError className="justify-center hidden">
+        <UiFieldError className="justify-center">
           {errors.root.message}
         </UiFieldError>
       )}
 
-      <UiButton type="submit" disabled={isSubmitting  || !isValid} fullWidth>
-        {isSubmitting  ? 'Creating account...' : 'Create Account'}
+      <UiButton
+        type="submit"
+        disabled={isSubmitting || !isValid}
+        fullWidth
+      >
+        {isSubmitting
+          ? "Creating account..."
+          : "Create Account"}
       </UiButton>
 
       <p className="text-center text-sm text-gray-600">
-        Already have an account?{' '}
+        Already have an account?{" "}
         <Link
           href="/auth/login"
           className="text-blue-600 hover:underline font-medium"

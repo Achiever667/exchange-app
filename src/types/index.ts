@@ -47,7 +47,7 @@ export interface RegisterPayload {
   username: string;
   phone_number: string;
   dial_code: string;
-  country: string;
+  country_id: string | number;
   password_confirmation: string;
   otp_type: string;
 }

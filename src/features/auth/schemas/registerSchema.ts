@@ -34,7 +34,7 @@ export const registerSchema = z
       .trim()
       .min(1, "Dial code is required"),
 
-    country: z
+    country_id: z
       .string()
       .trim()
       .min(1, "Country is required"),
