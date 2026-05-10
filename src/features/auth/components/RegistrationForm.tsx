@@ -222,28 +222,29 @@ export function RegistrationForm() {
           />
 
           <Controller
-  name="country_id"
-  control={control}
-  render={({ field }) => (
-    <div className="space-y-1">
-      <Typography variant="body2" className="font-medium">
-        Country
-      </Typography>
-      <CountrySelect
-        value={field.value || ""}
-        onChange={field.onChange}
-        disabled={isSubmitting}
-        error={!!errors.country_id}
-      />
+            name="country_id"
+            control={control}
+            render={({ field }) => (
+              <div className="space-y-1">
+                <Typography className="text-sm font-medium text-gray-700">
+                  Country
+                </Typography>
+                <CountrySelect
+                
+                  value={field.value || ""}
+                  onChange={field.onChange}
+                  disabled={isSubmitting}
+                  error={!!errors.country_id}
+                />
 
-      {errors.country_id?.message && (
-        <p className="text-sm text-red-500">
-          {errors.country_id.message}
-        </p>
-      )}
-    </div>
-  )}
-/>
+                {errors.country_id?.message && (
+                  <p className="text-sm text-red-500">
+                    {errors.country_id.message}
+                  </p>
+                )}
+              </div>
+            )}
+          />
         </div>
       </UiFieldGroup>
 

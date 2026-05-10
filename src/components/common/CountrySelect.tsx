@@ -40,7 +40,9 @@ export function CountrySelect({
 
         const formattedCountries = response.map((country) => ({
   label: country.name,
-  value: country.id,
+  // UiSelect uses strict equality for selected value.
+  // Our form stores country_id as a string, so we normalize here.
+  value: String(country.id),
 }));
 
         setCountries(formattedCountries);
