@@ -17,6 +17,8 @@ class ApiClient {
     reject: (reason?: any) => void;
   }> = [];
 
+
+  
   constructor() {
     this.axiosInstance = axios.create({
       baseURL: API_CONFIG.BASE_URL,
