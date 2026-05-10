@@ -74,6 +74,12 @@ export interface AuthResponse {
   tokens: AuthTokens;
 }
 
+export interface ICountry {
+  id: number;
+  name: string;
+  code: string;
+}
+
 export interface OTPResponse {
   message: string;
   expiresIn: number;
@@ -175,6 +181,10 @@ export interface RequestConfig {
   retries?: number;
   timeout?: number;
   headers?: Record<string, string>;
+}
+export interface ICountries {
+  id: string | number;
+  timeout?: number;
 }
 
 // Password Reset Types

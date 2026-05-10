@@ -40,6 +40,10 @@ export const PAYMENT_ENDPOINTS = {
   VALIDATE_WEBHOOK: '/payments/webhook/validate',
   GET_PAYMENT_HISTORY: '/payments/history',
 } as const;
+export const UTILS_ENDPOINTS = {
+  GET_COUNTRIES: '/countries',
+  
+} as const;
 
 export const STORAGE_KEYS = {
   ACCESS_TOKEN: 'access_token',
