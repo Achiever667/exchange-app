@@ -22,15 +22,28 @@ import {
 
 class AuthApiService {
 
+  // async register(payload: RegisterPayload): Promise<AuthResponse> {
+  //   try {
+  //   const response = await apiClient.post<AuthResponse>(AUTH_ENDPOINTS.REGISTER, payload);
+  //   return response.data!;
+  //   } catch (error) {
+  //     console.error('Registration failed:', error);
+  //     throw error;
+  //   }
+  // }
   async register(payload: RegisterPayload): Promise<AuthResponse> {
-    try {
-    const response = await apiClient.post<AuthResponse>(AUTH_ENDPOINTS.REGISTER, payload);
+  try {
+    const response = await apiClient.post<AuthResponse>(
+      AUTH_ENDPOINTS.REGISTER,
+      payload
+    );
+
     return response.data!;
-    } catch (error) {
-      console.error('Registration failed:', error);
-      throw error;
-    }
+  } catch (error) {
+    console.error("Registration failed:", error);
+    throw error;
   }
+}
 
   async login(credentials: AuthCredentials): Promise<AuthResponse> {
     try {

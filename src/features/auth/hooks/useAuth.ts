@@ -24,15 +24,14 @@ import { QUERY_KEYS } from '@/constants';
 
 export function useRegister() {
   const setUser = useAuthStore((state) => state.setUser);
-  const setTokens = useAuthStore((state) => state.setTokens);
-  const setAuthenticated = useAuthStore((state) => state.setAuthenticated);
 
   return useMutation<AuthResponse, ApiError, RegisterPayload>({
-    mutationFn: async (payload: RegisterPayload) => authApiService.register(payload),
+    mutationFn: async (payload: RegisterPayload) =>
+      authApiService.register(payload),
+
     onSuccess: (data) => {
       setUser(data.user);
-      setTokens(data.tokens);
-      setAuthenticated(true);
+
     },
   });
 }
@@ -47,8 +46,11 @@ export function useLogin() {
     mutationFn: async (credentials: AuthCredentials) => authApiService.login(credentials),
     onSuccess: (data) => {
       setUser(data.user);
-      setTokens(data.tokens);
-      setAuthenticated(true);
+  setUser(data.user);
+  if (data.tokens) {
+    setTokens(data.tokens);
+    setAuthenticated(true);
+  }
     },
   });
 }
@@ -63,8 +65,10 @@ export function useVerifyOtp() {
     mutationFn: async (payload: OTPVerificationPayload) => authApiService.verifyOtp(payload),
     onSuccess: (data) => {
       setUser(data.user);
-      setTokens(data.tokens);
-      setAuthenticated(true);
+      if (data.tokens) {
+    setTokens(data.tokens);
+    setAuthenticated(true);
+  }
     },
   });
 }

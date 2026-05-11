@@ -71,7 +71,7 @@ export interface AuthTokens {
 
 export interface AuthResponse {
   user: User;
-  tokens: AuthTokens;
+  tokens?: AuthTokens;
 }
 
 export interface ICountry {

@@ -142,14 +142,16 @@ sx={{
     },
   }}
   MenuProps={{
-    autoFocus: false,
-    PaperProps: {
+  autoFocus: false,
+  slotProps: {
+    paper: {
       sx: {
         borderRadius: 2,
         mt: 1,
       },
     },
-  }}
+  },
+}}
 >
           {searchable && (
             <ListSubheader>

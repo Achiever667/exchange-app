@@ -11,7 +11,7 @@ interface AuthState {
   error: string | null;
 
   setUser: (user: User | null) => void;
-  setTokens: (tokens: AuthTokens) => void;
+  setTokens: (tokens: AuthTokens | null | undefined) => void;  
   setAuthenticated: (isAuth: boolean) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
@@ -37,14 +37,26 @@ export const useAuthStore = create<AuthState>((set) => ({
       return { user };
     }),
 
-  setTokens: (tokens) =>
-    set(() => {
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, tokens.accessToken);
-        localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, tokens.refreshToken);
-      }
-      return { tokens };
-    }),
+ setTokens: (tokens) =>
+  set(() => {
+    if (!tokens) {
+      return { tokens: null };
+    }
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem(
+        STORAGE_KEYS.ACCESS_TOKEN,
+        tokens.accessToken
+      );
+
+      localStorage.setItem(
+        STORAGE_KEYS.REFRESH_TOKEN,
+        tokens.refreshToken
+      );
+    }
+
+    return { tokens };
+  }),
 
   setAuthenticated: (isAuth) => set(() => ({ isAuthenticated: isAuth })),
 
