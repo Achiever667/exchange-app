@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -34,6 +34,8 @@ import {
   RegisterCredentials,
 } from "../schemas/registerSchema";
 import { Typography } from "@mui/material";
+import { utilsApiService } from "@/services/misc-utils";
+import * as React from "react";
 
 export function RegistrationForm() {
   const router = useRouter();
@@ -47,6 +49,7 @@ export function RegistrationForm() {
     handleSubmit,
     formState: { errors, isValid, isSubmitting },
     setError,
+    setValue,
   } = useForm<RegisterCredentials>({
     resolver: zodResolver(registerSchema),
     mode: "onChange",
@@ -63,6 +66,41 @@ export function RegistrationForm() {
       password_confirmation: "",
     },
   });
+
+  const countryId = useWatch({ control, name: "country_id" });
+
+  const [dialCodeByCountryId, setDialCodeByCountryId] =
+    React.useState<Map<string, string>>(new Map());
+
+  React.useEffect(() => {
+    let mounted = true;
+
+    const load = async () => {
+      try {
+        const countries = await utilsApiService.getCountries();
+        if (!mounted) return;
+
+        const map = new Map<string, string>();
+        for (const c of countries) {
+map.set(String(c.id), (c as any).dial_code ?? "");
+        }
+        setDialCodeByCountryId(map);
+      } catch (e) {
+        // keep silent; validation will surface errors
+        console.error("Failed to load countries", e);
+      }
+    };
+
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  React.useEffect(() => {
+    const dial = dialCodeByCountryId.get(String(countryId)) || "";
+    setValue("dial_code", dial, { shouldValidate: true });
+  }, [countryId, dialCodeByCountryId, setValue]);
 
   const onsubmit = async (data: RegisterCredentials) => {
     try {
@@ -99,9 +137,7 @@ export function RegistrationForm() {
         message,
       });
 
-      setError("root", {
-        message,
-      });
+      setError("root", { message });
     }
   };
 
@@ -206,22 +242,6 @@ export function RegistrationForm() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
           <Controller
-            name="dial_code"
-            control={control}
-            render={({ field }) => (
-              <UiField
-                {...field}
-                label="Dial Code"
-                placeholder="+234"
-                disabled={isSubmitting}
-                error={!!errors.dial_code}
-                errorMessage={errors.dial_code?.message}
-                startIcon={<Language sx={{ fontSize: 20 }} />}
-              />
-            )}
-          />
-
-          <Controller
             name="country_id"
             control={control}
             render={({ field }) => (
@@ -230,9 +250,8 @@ export function RegistrationForm() {
                   Country
                 </Typography>
                 <CountrySelect
-                
                   value={field.value || ""}
-                  onChange={field.onChange}
+                  onChange={(v) => field.onChange(String(v))}
                   disabled={isSubmitting}
                   error={!!errors.country_id}
                 />
@@ -243,6 +262,22 @@ export function RegistrationForm() {
                   </p>
                 )}
               </div>
+            )}
+          />
+
+          <Controller
+            name="dial_code"
+            control={control}
+            render={({ field }) => (
+              <UiField
+                {...field}
+                label="Dial Code"
+                placeholder="+234"
+                disabled={true}
+                error={!!errors.dial_code}
+                errorMessage={errors.dial_code?.message}
+                startIcon={<Language sx={{ fontSize: 20 }} />}
+              />
             )}
           />
         </div>
@@ -319,3 +354,4 @@ export function RegistrationForm() {
     </form>
   );
 }
+

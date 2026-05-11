@@ -23,7 +23,6 @@ type CountrySelectProps = {
 export function CountrySelect({
   value,
   onChange,
-  label = "Country",
   disabled,
   error,
   searchable = true,
@@ -58,7 +57,6 @@ export function CountrySelect({
 
   return (
     <UiSelect
-      label={label}
       value={value}
       onChange={onChange}
       options={countries}
