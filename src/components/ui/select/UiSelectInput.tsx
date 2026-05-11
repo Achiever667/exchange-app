@@ -113,20 +113,44 @@ export function UiSelect({
           value={value}
           onChange={handleChange}
           label={label}
-          sx={{
-            borderRadius: 2,
-            height: sizeMap[size],
-          }}
-          MenuProps={{
-            autoFocus: false,
-            PaperProps: {
-              sx: {
-                borderRadius: 2,
-                mt: 1,
-              },
-            },
-          }}
-        >
+sx={{
+    borderRadius: 2,
+    height: sizeMap[size],
+
+    '& .MuiSelect-select': {
+      padding:
+        size === 'sm'
+          ? '8px 4px'
+          : size === 'lg'
+            ? '14px 16px'
+            : '12px 14px',
+      display: 'flex',
+      alignItems: 'center',
+    },
+
+    '& .MuiOutlinedInput-notchedOutline': {
+      borderColor: error ? 'error.main' : '#e2e8f0',
+      borderWidth: error ? 2 : 1,
+    },
+
+    '&:hover .MuiOutlinedInput-notchedOutline': {
+      borderColor: error ? 'error.dark' : 'primary.main',
+    },
+
+    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+      borderColor: error ? 'error.main' : 'primary.main',
+    },
+  }}
+  MenuProps={{
+    autoFocus: false,
+    PaperProps: {
+      sx: {
+        borderRadius: 2,
+        mt: 1,
+      },
+    },
+  }}
+>
           {searchable && (
             <ListSubheader>
               <TextField
@@ -143,11 +167,12 @@ export function UiSelect({
             </ListSubheader>
           )}
 
+          <MenuItem value="" disabled>
+            {searchable ? "Select country" : "Select"}
+          </MenuItem>
+
           {filteredOptions.map((opt) => (
-            <MenuItem
-              key={opt.value}
-              value={opt.value}
-            >
+            <MenuItem key={opt.value} value={opt.value}>
               {opt.label}
             </MenuItem>
           ))}

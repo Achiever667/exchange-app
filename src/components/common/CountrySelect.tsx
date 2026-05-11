@@ -63,6 +63,7 @@ export function CountrySelect({
       disabled={disabled || loading}
       error={error}
       searchable={searchable}
+      label={"Country"}
     />
   );
 }

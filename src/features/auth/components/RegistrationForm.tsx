@@ -203,50 +203,13 @@ map.set(String(c.id), (c as any).dial_code ?? "");
         </div>
       </UiFieldGroup>
 
-      <UiFieldGroup>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <Controller
-            name="email"
-            control={control}
-            render={({ field }) => (
-              <UiField
-                {...field}
-                label="Email"
-                placeholder="you@example.com"
-                type="email"
-                disabled={isSubmitting}
-                error={!!errors.email}
-                errorMessage={errors.email?.message}
-                startIcon={<Mail sx={{ fontSize: 20 }} />}
-              />
-            )}
-          />
-
-          <Controller
-            name="phone_number"
-            control={control}
-            render={({ field }) => (
-              <UiField
-                {...field}
-                label="Phone Number"
-                placeholder="08059811404"
-                type="number"
-                disabled={isSubmitting}
-                error={!!errors.phone_number}
-                errorMessage={errors.phone_number?.message}
-                startIcon={<Phone sx={{ fontSize: 20 }} />}
-              />
-            )}
-          />
-        </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
           <Controller
             name="country_id"
             control={control}
             render={({ field }) => (
               <div className="space-y-1">
-                <Typography className="text-sm font-medium text-gray-700">
+                <Typography className="text-sm font-medium mb-4 pb-1 text-gray-700">
                   Country
                 </Typography>
                 <CountrySelect
@@ -281,6 +244,48 @@ map.set(String(c.id), (c as any).dial_code ?? "");
             )}
           />
         </div>
+
+      <UiFieldGroup>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+          <Controller
+            name="phone_number"
+            control={control}
+            render={({ field }) => (
+              <UiField
+                {...field}
+                label="Phone Number"
+                placeholder="08059811404"
+                type="number"
+                disabled={isSubmitting}
+                error={!!errors.phone_number}
+                errorMessage={errors.phone_number?.message}
+                startIcon={<Phone sx={{ fontSize: 20 }} />}
+              />
+            )}
+          />
+
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <UiField
+                {...field}
+                label="Email"
+                placeholder="you@example.com"
+                type="email"
+                disabled={isSubmitting}
+                error={!!errors.email}
+                errorMessage={errors.email?.message}
+                startIcon={<Mail sx={{ fontSize: 20 }} />}
+              />
+            )}
+          />
+
+
+        </div>
+
+
       </UiFieldGroup>
 
       <UiFieldGroup>
